@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Movie Project One</string>
+
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Portions of the API url request -->
+    <string name="poster_size">w185</string>
+    <string name="poster_base_url">http://image.tmdb.org/t/p/</string>
+
+    <!-- Text for an empty adapter -->
+    <string name="no_movies_found">No movies have been found \n or the network is not connected...</string>
+
+    <!-- Key name for temperature unit preference -->
+    <string name="pref_sorting_key">sorting</string>
+
+    <!-- Sorting label for the sorting method preference -->
+    <string name="pref_sorting_label">Sorting Method</string>
+
+    <!-- Labels for sorting method preference -->
+    <string name="pref_sorting_label_popularity">Popular</string>
+    <string name="pref_sorting_label_rating">Top Rated</string>
+
+    <!-- Values in SharedPreferences for popularity and top rated sorting options -->
+    <string name="pref_sorting_popularity">movie/popular</string>
+    <string name="pref_sorting_rating">movie/top_rated</string>
+    <string name="movie_key">movieItem</string>
+</resources>
