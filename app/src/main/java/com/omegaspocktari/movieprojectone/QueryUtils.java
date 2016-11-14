@@ -177,8 +177,14 @@ public class QueryUtils {
                 Movie movieObject = new Movie(movieTitle, moviePlotSynopsis, movieVoteAverage,
                         movieReleaseDate, moviePoster);
 
+                Log.v(LOG_TAG, "\nPoster: " + movieObject.getMoviePoster()
+                        + "\nTitle: " +  movieObject.getMovieTitle()
+                        + "\nUser Rating: " + movieObject.getMovieUserRating()
+                        + "\nRelease: " + movieObject.getMovieRelease()
+                        + "\nPlot: " + movieObject.getMoviePlot() + "\n");
                 movies.add(movieObject);
             }
+            Log.v(LOG_TAG, "Size of movies after JSON queries: " + movies.size());
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the JSON results [Query Utils].", e);
         }

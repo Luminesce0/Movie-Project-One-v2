@@ -100,11 +100,12 @@ public class MovieFragment extends Fragment {
 
         // Grid layout manager does not function with the getActivity() method so we must
         // figure out what to do for that little tidbit.
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         // Setup the adapter to a default
         mAdapter = new MovieAdapter(getContext(), new ArrayList<Movie>());
+        mRecyclerView.setAdapter(mAdapter);
 
         if (mAdapter.getItemCount() <= 0 ) {
             // Setup the empty state view should no data be acquired.

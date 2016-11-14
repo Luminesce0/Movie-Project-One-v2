@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
@@ -18,17 +17,17 @@ import java.util.ArrayList;
  */
 
 // TODO: Main logic for this adapter is set up, simply need to fill up the ArrayList.
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
     private ArrayList<Movie> mMoviesList;
     private Context mContext;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movieDataset) {
-        mMoviesList = movieDataset;
+    public MovieAdapter(Context context, ArrayList<Movie> movieList) {
+        mMoviesList = movieList;
         mContext = context;
     }
 
-    public MovieAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         // Gather context from parent to inflate the layout of the given XML into the layoutView view.
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_item, parent, false);
@@ -73,23 +72,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return mMoviesList.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView moviePosterFragment;
-//        public TextView movieTitle;
-//        public TextView movieRelease;
-//        public RatingBar movieRating;
-//        public TextView moviePlot;
-
-        public ViewHolder(View v) {
-            super(v);
-            moviePosterFragment = (ImageView) v.findViewById(R.id.movie_poster_list);
-//            movieTitle = (TextView) v.findViewById(R.id.movie_title);
-//            movieRelease = (TextView) v.findViewById(R.id.movie_release);
-//            movieRating = (RatingBar) v.findViewById(R.id.movie_rating);
-//            moviePlot = (TextView) v.findViewById(R.id.movie_plot);
-        }
     }
 
 }
