@@ -3,6 +3,7 @@ package com.omegaspocktari.movieprojectone;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -14,6 +15,8 @@ import com.squareup.picasso.Picasso;
  */
 
 public class MovieDetailActivity extends AppCompatActivity{
+
+    private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class MovieDetailActivity extends AppCompatActivity{
         int movieUserRating = movieItem.getmMovieUserRatingParcel();
         int movieRelease = movieItem.getmMovieReleaseParcel();
         int moviePoster = movieItem.getmMoviePosterParcel();
+        Log.v(LOG_TAG, "Movie Title, what happened????: " + movieTitle);
 
         ImageView poster = (ImageView) findViewById(R.id.movie_poster);
         Picasso.with(getApplicationContext())

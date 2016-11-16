@@ -1,14 +1,11 @@
 package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -22,9 +19,17 @@ public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
     private ArrayList<Movie> mMoviesList;
     private Context mContext;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movieList) {
+    // Create an OnItemClickListener interface.
+    public interface OnItemClickListener{
+        void onItemClick(Movie movie);
+    }
+
+    private final OnItemClickListener mOnItemClickListener;
+
+    public MovieAdapter(Context context, ArrayList<Movie> movieList, OnItemClickListener onItemClickListener) {
         mMoviesList = movieList;
         mContext = context;
+        mOnItemClickListener = onItemClickListener;
     }
 
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -35,33 +40,17 @@ public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
         // Utilize View Holder to obtain all the relevant view IDs from the provided layoutView
         ViewHolder viewHolder = new ViewHolder(layoutView);
 
+
         return viewHolder;
     }
 
+
     //TODO: Might need to do MovieAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
+        Log.v(LOG_TAG, "Hey! This just ran through the onBindViewHolder of [MovieAdapter]");
+        holder.bind(mMoviesList.get(position), mOnItemClickListener);
 
 
-        Log.v(LOG_TAG, " Anything here? " + mMoviesList.get(position)
-                .getMoviePoster().toString());
-
-        // Here we will set all the relevant data from the current movie to
-        // the list item.
-        Picasso.with(mContext)
-                .load(mMoviesList.get(position)
-                        .getMoviePoster().toString())
-                .into(holder.moviePosterFragment);
-
-        holder.moviePosterFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent movieDetail = new Intent(mContext, MovieDetailActivity.class);
-
-                movieDetail.putExtra(mContext.getString(R.string.movie_key), mMoviesList.get(position));
-
-                mContext.startActivity(movieDetail);
-            }
-        });
     }
 
     /**
