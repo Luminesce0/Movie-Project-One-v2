@@ -22,7 +22,6 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(final Movie movie, final MovieAdapter.OnItemClickListener listener) {
-        Log.v(LOG_TAG, " Anything here? " + movie.getMoviePoster().toString());
 
         // Here we will set all the relevant data from the current movie to
         // the list item.
@@ -32,13 +31,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         moviePosterFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
-                Log.v(LOG_TAG, "Hey! This just ran through the on click on ViewHolder...");
                 listener.onItemClick(movie);
-//                Intent movieDetail = new Intent(itemView.getContext(), MovieDetailActivity.class);
-//
-//                movieDetail.putExtra(itemView.getContext().getString(R.string.movie_key), movie);
-//
-//                itemView.getContext().startActivity(movieDetail);
             }
         });
     }

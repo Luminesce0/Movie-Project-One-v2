@@ -37,7 +37,6 @@ public class QueryUtils {
     private QueryUtils() {
     }
 
-    // TODO: Sort this shit out.
     public static List<Movie> getMovieDataFromJson(String sortingMethodPath, Context context) {
         // Create a URL Object
         Uri.Builder builder = new Uri.Builder();
@@ -48,12 +47,9 @@ public class QueryUtils {
                 .appendQueryParameter(API_QUERY, BuildConfig.THE_MOVIE_DB_API_KEY);
         URL url = createUrl(builder.build().toString());
 
-        Log.e(LOG_TAG, "IT WORKED, checkout the URL \n " + builder.build().toString());
-
         // Perform HTTP request to the URL & recieve a JSON response back.
         String jsonResponse = null;
         try {
-            // TODO: Generate Network Boiler Plate code...
             jsonResponse = makeHTTPRequest(url);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP Request [Query Utils].", e);
@@ -153,7 +149,6 @@ public class QueryUtils {
 
             String movieTitle;
             String movieReleaseDate;
-            //TODO: Generate the correct URL for this now...
             String moviePoster;
             String movieVoteAverage;
             String moviePlotSynopsis;
@@ -177,14 +172,8 @@ public class QueryUtils {
                 Movie movieObject = new Movie(movieTitle, moviePlotSynopsis, movieVoteAverage,
                         movieReleaseDate, moviePoster);
 
-                Log.v(LOG_TAG, "\nPoster: " + movieObject.getMoviePoster()
-                        + "\nTitle: " +  movieObject.getMovieTitle()
-                        + "\nUser Rating: " + movieObject.getMovieUserRating()
-                        + "\nRelease: " + movieObject.getMovieRelease()
-                        + "\nPlot: " + movieObject.getMoviePlot() + "\n");
                 movies.add(movieObject);
             }
-            Log.v(LOG_TAG, "Size of movies after JSON queries: " + movies.size());
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the JSON results [Query Utils].", e);
         }

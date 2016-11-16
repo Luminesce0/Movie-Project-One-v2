@@ -2,7 +2,6 @@ package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
  * Created by ${Michael} on 11/4/2016.
  */
 
-// TODO: Main logic for this adapter is set up, simply need to fill up the ArrayList.
 public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
     private ArrayList<Movie> mMoviesList;
@@ -44,10 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<ViewHolder> {
         return viewHolder;
     }
 
-
-    //TODO: Might need to do MovieAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Log.v(LOG_TAG, "Hey! This just ran through the onBindViewHolder of [MovieAdapter]");
         holder.bind(mMoviesList.get(position), mOnItemClickListener);
 
 

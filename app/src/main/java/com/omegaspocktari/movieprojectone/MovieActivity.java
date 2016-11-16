@@ -32,14 +32,12 @@ public class MovieActivity extends AppCompatActivity {
         }
     }
 
-    //TODO: Create a menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    //TODO: make sure I'm working
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {

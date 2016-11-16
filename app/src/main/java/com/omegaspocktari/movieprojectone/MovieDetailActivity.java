@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -34,8 +33,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         Float movieUserRating = movieItem.getMovieUserRating();
         String movieRelease = movieItem.getMovieRelease();
         String moviePoster = movieItem.getMoviePoster();
-        Log.v(LOG_TAG, "Movie Title, what happened????: " + movieTitle);
-        Log.v(LOG_TAG, "Movie Rating: " + movieUserRating);
 
         ImageView poster = (ImageView) findViewById(R.id.movie_poster);
         Picasso.with(getApplicationContext())

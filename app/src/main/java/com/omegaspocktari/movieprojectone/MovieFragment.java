@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -52,7 +51,6 @@ public class MovieFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // TODO: Create fragment for menu
         inflater.inflate(R.menu.movie_fragment, menu);
     }
 
@@ -94,7 +92,6 @@ public class MovieFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 
         // This improves performance if the changes in content do not change layout size
-        //TODO: Maybe change this
 //        mRecyclerView.setHasFixedSize(true);
 
         // Set the layout manager appropriately.
@@ -105,11 +102,9 @@ public class MovieFragment extends Fragment {
         mAdapter = new MovieAdapter(getContext(), mMovies, new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
-                Toast.makeText(getContext(), "Guess I was clicked. TF is this...", Toast.LENGTH_SHORT).show();
-                Log.v(LOG_TAG, "Hey! This just ran through the on Click on the [MovieFragment]");
 
                 Log.v(LOG_TAG, "Here is a sample of the movie from the array list... \n" +
-                        "This is from [onItemClick]...\n"
+                        "This is from [onItemClick]{MovieFragment}...\n"
                         +"\nPoster: " + movie.getMoviePoster()
                         + "\nTitle: " +  movie.getMovieTitle()
                         + "\nUser Rating: " + movie.getMovieUserRating()
@@ -139,14 +134,11 @@ public class MovieFragment extends Fragment {
         super.onStart();
 
         // Every time onStart is called update the movie list.
-        Log.v(LOG_TAG, "Update Movies in onStart");
         updateMovies();
     }
 
-    // TODO: Generate Movie Option Sorting Choice somewhere. Probably not here... why is this here?
     private void updateMovies() {
 
-        Log.v(LOG_TAG, "updateMovies method.");
         // Should a network connection be present, attempt to fetch data.
         if (networkInfo != null && networkInfo.isConnected()) {
 
@@ -184,19 +176,9 @@ public class MovieFragment extends Fragment {
             super.onPostExecute(movieList);
 
             // If the Array List was populated with movie objects insert them into the adapter.
-            Log.v(LOG_TAG, "Are mMovies null?");
             if (movieList != null) {
                 mMovies.clear();
                 mMovies.addAll(movieList);
-                Log.v(LOG_TAG, "Here is a sample of the movie from the array list... \n" +
-                        "This is from [onPostExecute]...\n"
-                        +"\nPoster: " + movieList.get(1).getMoviePoster()
-                        + "\nTitle: " +  movieList.get(1).getMovieTitle()
-                        + "\nUser Rating: " + movieList.get(1).getMovieUserRating()
-                        + "\nRelease: " + movieList.get(1).getMovieRelease()
-                        + "\nPlot: " + movieList.get(1).getMoviePlot() + "\n");
-                Log.v(LOG_TAG, "How many items? " + mAdapter.getItemCount());
-                Log.v(LOG_TAG, "Are mMovies null?! NOOOOOOO :D ");
                 mAdapter.notifyDataSetChanged();
                 mEmptyStateView.setVisibility(View.GONE);
 
