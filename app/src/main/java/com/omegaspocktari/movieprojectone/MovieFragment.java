@@ -58,13 +58,6 @@ public class MovieFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: Check this out later.
-//        int id = item.getItemId();
-//        if (id == R.id.action_refresh) {
-//            // TODO: make this too.
-//            updateMovies();
-//            return true;
-//        }
         return super.onOptionsItemSelected(item);
     }
 

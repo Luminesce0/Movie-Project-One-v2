@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
  * Created by ${Michael} on 11/11/2016.
  */
 
-public class MovieDetailActivity extends AppCompatActivity{
+public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
 
@@ -22,19 +22,20 @@ public class MovieDetailActivity extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        Movie movieItem = getIntent().getExtras().getParcelable(getString(R.string.movie_key));
+        Movie movieItem = (Movie) getIntent().getExtras().getSerializable(getString(R.string.movie_key));
 
         GenerateMovieDetailPage(movieItem);
     }
 
     private void GenerateMovieDetailPage(Movie movieItem) {
         // Do these return the original item values?
-        int movieTitle = movieItem.getmMovieTitleParcel();
-        int moviePlot = movieItem.getmMoviePlotParcel();
-        int movieUserRating = movieItem.getmMovieUserRatingParcel();
-        int movieRelease = movieItem.getmMovieReleaseParcel();
-        int moviePoster = movieItem.getmMoviePosterParcel();
+        String movieTitle = movieItem.getMovieTitle();
+        String moviePlot = movieItem.getMoviePlot();
+        Float movieUserRating = movieItem.getMovieUserRating();
+        String movieRelease = movieItem.getMovieRelease();
+        String moviePoster = movieItem.getMoviePoster();
         Log.v(LOG_TAG, "Movie Title, what happened????: " + movieTitle);
+        Log.v(LOG_TAG, "Movie Rating: " + movieUserRating);
 
         ImageView poster = (ImageView) findViewById(R.id.movie_poster);
         Picasso.with(getApplicationContext())

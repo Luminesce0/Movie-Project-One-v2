@@ -4,47 +4,108 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <!-- Poster/Release Date/Title/Rating -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <!-- Movie Poster -->
         <ImageView
             android:id="@+id/movie_poster"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_margin="16dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
 
+        <!-- Lieear Layout setup for title/release date/rating -->
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="16dp"
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
-
-                android:id="@+id/movie_title"
+            <!-- Movie Title Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_title_header"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/movie_release"
+                <TextView
+                    android:id="@+id/movie_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- Release Date Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_release_header"
+                    android:textStyle="bold" />
 
-            <RatingBar
-                android:id="@+id/movie_rating"
+                <TextView
+                    android:id="@+id/movie_release"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <!-- Rating Bar Section -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_rating_header"
+                    android:textStyle="bold" />
+
+                <RatingBar
+                    android:id="@+id/movie_rating"
+                    style="@style/RatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.01" />
+            </LinearLayout>
+
+
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Divider for the movie plot -->
+    <ImageView
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#6e6969"/>
+
+    <!-- Movie Synopsis -->
     <TextView
         android:id="@+id/movie_plot"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp" />
 
 </LinearLayout>
