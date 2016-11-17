@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -102,14 +101,6 @@ public class MovieFragment extends Fragment {
         mAdapter = new MovieAdapter(getContext(), mMovies, new MovieAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Movie movie) {
-
-                Log.v(LOG_TAG, "Here is a sample of the movie from the array list... \n" +
-                        "This is from [onItemClick]{MovieFragment}...\n"
-                        +"\nPoster: " + movie.getMoviePoster()
-                        + "\nTitle: " +  movie.getMovieTitle()
-                        + "\nUser Rating: " + movie.getMovieUserRating()
-                        + "\nRelease: " + movie.getMovieRelease()
-                        + "\nPlot: " + movie.getMoviePlot() + "\n");
 
                 Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
 

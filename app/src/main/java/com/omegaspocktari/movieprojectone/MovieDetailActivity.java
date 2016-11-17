@@ -46,7 +46,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         release.setText(movieRelease);
 
         RatingBar rating = (RatingBar) findViewById(R.id.movie_rating);
-        rating.setRating(movieUserRating);
+        rating.setRating((movieUserRating/2));
 
         TextView plot = (TextView) findViewById(R.id.movie_plot);
         plot.setText(moviePlot);
