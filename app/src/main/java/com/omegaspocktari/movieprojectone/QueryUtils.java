@@ -116,6 +116,8 @@ public class QueryUtils {
         if (inputStream != null) {
             // Byte stream to character stream. Decodes bytes utilizing the given charset.
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
+
+            //
             // Good to wrap buffered reader around Readers whose read() operations may be costly.
             BufferedReader reader = new BufferedReader(inputStreamReader);
             // Simple loop to read through the inputStream.

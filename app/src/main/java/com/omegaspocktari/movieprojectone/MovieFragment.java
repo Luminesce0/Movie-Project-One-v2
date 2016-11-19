@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ public class MovieFragment extends Fragment {
     private TextView mEmptyStateView;
 
     private NetworkInfo networkInfo;
+
+    private ProgressBar mProgressBar;
 
 
     @Override
@@ -80,6 +83,9 @@ public class MovieFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
+        // Progress Bar
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+
         // Acquire a connectivity manager to see if the network is connected.
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,7 +97,7 @@ public class MovieFragment extends Fragment {
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 
         // This improves performance if the changes in content do not change layout size
-//        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
 
         // Set the layout manager appropriately.
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
@@ -151,6 +157,12 @@ public class MovieFragment extends Fragment {
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
+
         protected ArrayList<Movie> doInBackground(String... params) {
 
             // Run the methods from QueryUtils to acquire an array list of movie objects
@@ -165,6 +177,9 @@ public class MovieFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Movie> movieList) {
             super.onPostExecute(movieList);
+
+            // Hide progress bar
+            mProgressBar.setVisibility(View.GONE);
 
             // If the Array List was populated with movie objects insert them into the adapter.
             if (movieList != null) {

@@ -10,15 +10,8 @@ import android.view.MenuItem;
  * Credits...
  * http://www.vogella.com/tutorials/AndroidRecyclerView/article.html (Recycler View)...
  * https://developer.android.com/training/material/lists-cards.html#RVExamples
- *
- * Paragraph 3 - Attribution
- *  Use TMDb logo to identify use of the TMDb API
- *  "This product uses the TMDb API but is not endorsed or certified by TMDb."... Prominently?
- *  TMDb logo shall be less prominent than the logo or mark that primarily describes the application
- *      and the logo shall not imply and endorsement by TMDb
- *
- *
  */
+
 public class MovieActivity extends AppCompatActivity {
 
     @Override
