@@ -47,6 +47,7 @@ public class MovieFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Allow fragment to handle menu events.
         setHasOptionsMenu(true);
     }
@@ -84,7 +85,7 @@ public class MovieFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_movie, container, false);
 
         // Progress Bar
-        mProgressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
+        mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_network);
 
         // Acquire a connectivity manager to see if the network is connected.
         ConnectivityManager connectivityManager = (ConnectivityManager)
@@ -94,7 +95,7 @@ public class MovieFragment extends Fragment {
         networkInfo = connectivityManager.getActiveNetworkInfo();
 
         // This will allow for our RecyclerView to be bound to the layout programmatically.
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_movie_fragment);
 
         // This improves performance if the changes in content do not change layout size
         mRecyclerView.setHasFixedSize(true);
@@ -104,9 +105,9 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         // Setup the adapter to a default
-        mAdapter = new MovieAdapter(getContext(), mMovies, new MovieAdapter.OnItemClickListener() {
+        mAdapter = new MovieAdapter(getContext(), mMovies, new MovieAdapter.ListItemClickListener() {
             @Override
-            public void onItemClick(Movie movie) {
+            public void onListItemClick(Movie movie) {
 
                 Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
 
@@ -115,11 +116,13 @@ public class MovieFragment extends Fragment {
                 startActivity(movieDetail);
             }
         });
+
+        // Set the adapter to our recycler view
         mRecyclerView.setAdapter(mAdapter);
 
-        if (mAdapter.getItemCount() <= 0 ) {
+        if (mAdapter.getItemCount() <= 0) {
             // Setup the empty state view should no data be acquired.
-            mEmptyStateView = (TextView) rootView.findViewById(R.id.empty_view);
+            mEmptyStateView = (TextView) rootView.findViewById(R.id.tv_no_results);
             mEmptyStateView.setText(R.string.no_movies_found);
         }
 

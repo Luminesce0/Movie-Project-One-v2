@@ -34,7 +34,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         String movieRelease = movieItem.getMovieRelease();
         String moviePoster = movieItem.getMoviePoster();
 
-        ImageView poster = (ImageView) findViewById(R.id.movie_poster);
+        ImageView poster = (ImageView) findViewById(R.id.iv_movie_poster);
         Picasso.with(getApplicationContext())
                 .load(moviePoster)
                 .into(poster);

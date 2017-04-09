@@ -6,12 +6,12 @@
     <!-- A RecyclerView with some commonly used attributes -->
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_recycler_view"
+        android:id="@+id/rv_movie_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
-        android:id="@+id/empty_view"
+        android:id="@+id/tv_no_results"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -19,7 +19,7 @@
         android:layout_centerHorizontal="true"/>
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/pb_network"
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:gravity="center"
