@@ -11,6 +11,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 /**
  * Created by ${Michael} on 11/9/2016.
  */
-public class MovieFragment extends Fragment {
+public class MovieFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler{
 
     private final static String LOG_TAG = MovieFragment.class.getSimpleName();
 
@@ -105,17 +106,7 @@ public class MovieFragment extends Fragment {
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
 
         // Setup the adapter to a default
-        mAdapter = new MovieAdapter(getContext(), mMovies, new MovieAdapter.ListItemClickListener() {
-            @Override
-            public void onListItemClick(Movie movie) {
-
-                Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
-
-                movieDetail.putExtra(getString(R.string.movie_key), movie);
-
-                startActivity(movieDetail);
-            }
-        });
+        mAdapter = new MovieAdapter(getContext(), mMovies, this);
 
         // Set the adapter to our recycler view
         mRecyclerView.setAdapter(mAdapter);
@@ -155,6 +146,18 @@ public class MovieFragment extends Fragment {
             moviesTask.execute(sortingPreference);
 
         }
+    }
+
+    @Override
+    public void onListItemClick(Movie movie) {
+        Log.d(LOG_TAG, "\n\nThis is the onClick run within the instantiation of" +
+                "mAdapter/creating a new MovieAdapter\n\n");
+
+        Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
+
+        movieDetail.putExtra(getString(R.string.movie_key), movie);
+
+        startActivity(movieDetail);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
