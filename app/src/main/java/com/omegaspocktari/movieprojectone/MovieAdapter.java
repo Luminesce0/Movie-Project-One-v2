@@ -1,6 +1,7 @@
 package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +58,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     // Create an MovieAdapterOnClickHandler interface.
     public interface MovieAdapterOnClickHandler {
         void onListItemClick(Movie movie);
+
+        void onLoadFinished(Loader<ArrayList<Movie>> loader, Movie data);
     }
 
     /**
@@ -88,6 +91,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             // Binding picture to the relevant view
             Picasso.with(itemView.getContext())
                     .load(movie.getMoviePoster().toString())
+                    // TODO 1: Ehhyyy! Do this part.
+//                    .placeholder()
+//                    .error()
                     .into(listItemMoviePoster);
 
             listItemMovie = movie;
