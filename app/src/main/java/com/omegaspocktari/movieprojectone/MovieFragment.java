@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -26,23 +28,26 @@ import java.util.ArrayList;
 /**
  * Created by ${Michael} on 11/9/2016.
  */
-public class MovieFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler{
+public class MovieFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<ArrayList<Movie>>,
+        MovieAdapter.MovieAdapterOnClickHandler {
 
     private final static String LOG_TAG = MovieFragment.class.getSimpleName();
 
+    // Loader ID
+    private static final int MOVIE_RESULTS_LOADER = 0;
+
+    // Key for movie results
+    private static final String MOVIE_PREFERENCES = "preferences";
+
     private RecyclerView mRecyclerView;
-
     private ArrayList<Movie> mMovies = new ArrayList<>();
-
     private RecyclerView.Adapter mAdapter;
-
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
     private TextView mEmptyStateView;
-
     private NetworkInfo networkInfo;
-
     private ProgressBar mProgressBar;
+    private ArrayList<Movie> mMovieList;
 
 
     @Override
@@ -133,18 +138,22 @@ public class MovieFragment extends Fragment implements MovieAdapter.MovieAdapter
         // Should a network connection be present, attempt to fetch data.
         if (networkInfo != null && networkInfo.isConnected()) {
 
-            // Generate the AsyncTask.
-            FetchMoviesTask moviesTask = new FetchMoviesTask();
-
             // Gather preference with the default being popularity.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             String sortingPreference = prefs.getString(
                     getString(R.string.pref_sorting_key),
                     getString(R.string.pref_sorting_popularity));
 
-            // Run AsyncTask with the preference gathered from the user.
-            moviesTask.execute(sortingPreference);
+            Bundle movieUpdateBundle = new Bundle();
+            movieUpdateBundle.putString(MOVIE_PREFERENCES, sortingPreference);
 
+            LoaderManager loaderManager = getActivity().getSupportLoaderManager();
+            Loader<String> movieLoader = loaderManager.getLoader(MOVIE_RESULTS_LOADER);
+            if (movieLoader == null) {
+                loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this);
+            } else {
+                loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this);
+            }
         }
     }
 
@@ -160,41 +169,79 @@ public class MovieFragment extends Fragment implements MovieAdapter.MovieAdapter
         startActivity(movieDetail);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+    /**
+     * Instantiate and return a new Loader for the given ID.
+     *
+     * @param id   The ID whose loader is to be created.
+     * @param args Any arguments supplied by the caller.
+     * @return Return a new Loader instance that is ready to start loading.
+     */
+    @Override
+    public Loader<ArrayList<Movie>> onCreateLoader(int id, final Bundle args) {
+        // Generate an AsyncTask that will obtain the movie information within loader.
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
+        return new AsyncTaskLoader<ArrayList<Movie>>(getContext()) {
 
-        protected ArrayList<Movie> doInBackground(String... params) {
+            ArrayList<Movie> mMovieData = null;
 
-            // Run the methods from QueryUtils to acquire an array list of movie objects
-            // derived from user preference inputs/defaults and JSON queries.
-            ArrayList<Movie> movieList = (ArrayList<Movie>)
-                    QueryUtils.getMovieDataFromJson(params[0], getContext());
+            public void onStartLoading() {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    forceLoad();
+            }
 
-            // Return the output of QueryUtil methods.
-            return movieList;
-        }
+            @Override
+            public ArrayList<Movie> loadInBackground() {
 
-        @Override
-        protected void onPostExecute(ArrayList<Movie> movieList) {
-            super.onPostExecute(movieList);
+                String jsonUrlPreferences = args.getString(MOVIE_PREFERENCES);
 
-            // Hide progress bar
-            mProgressBar.setVisibility(View.GONE);
+                // Run the methods from QueryUtils to acquire an array list of movie objects
+                // derived from user preference inputs/defaults and JSON queries.
+                ArrayList<Movie> movieList = (ArrayList<Movie>)
+                        QueryUtils.getMovieDataFromJson(jsonUrlPreferences, getContext());
 
-            // If the Array List was populated with movie objects insert them into the adapter.
-            if (movieList != null) {
-                mMovies.clear();
-                mMovies.addAll(movieList);
-                mAdapter.notifyDataSetChanged();
-                mEmptyStateView.setVisibility(View.GONE);
+                // Return the output of QueryUtil methods.
+                return movieList;
 
             }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> movieList) {
+        // Hide progress bar
+        mProgressBar.setVisibility(View.GONE);
+
+        // If the Array List was populated with movie objects insert them into the adapter.
+        if (movieList != null) {
+            mMovies.clear();
+            mMovies.addAll(movieList);
+            mAdapter.notifyDataSetChanged();
+            mEmptyStateView.setVisibility(View.GONE);
+            mMovieList = movieList;
+        } else {
+            mEmptyStateView.setVisibility(View.VISIBLE);
         }
+    }
+
+    //TODO: Figure out why this is necessary and must be implemented when it is never run.
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Movie>> loader, Movie data) {
+
+        //TODO:
+//        mProgressBar.setVisibility(View.GONE);
+//
+//        Log.d(LOG_TAG, "\n\nWhy is this second loader necessary?\n\n");
+//        // If the Array List was populated with movie objects insert them into the adapter.
+//        if (mMovieList != null) {
+//            mMovies.clear();
+//            mMovies.addAll(mMovieList);
+//            mAdapter.notifyDataSetChanged();
+//            mEmptyStateView.setVisibility(View.GONE);
+//        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+
     }
 }
