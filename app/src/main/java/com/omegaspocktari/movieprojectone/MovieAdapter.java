@@ -90,7 +90,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             // Binding picture to the relevant view
             Picasso.with(itemView.getContext())
-                    .load(movie.getMoviePoster().toString())
+                    .load(movie.getMoviePoster())
                     // TODO 1: Ehhyyy! Do this part.
 //                    .placeholder()
 //                    .error()

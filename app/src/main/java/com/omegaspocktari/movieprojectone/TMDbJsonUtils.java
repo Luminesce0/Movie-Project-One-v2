@@ -23,9 +23,9 @@ import java.util.List;
 /**
  * Created by ${Michael} on 11/7/2016.
  */
-public class QueryUtils {
+public class TMDbJsonUtils {
 
-    private static final String LOG_TAG = QueryUtils.class.getSimpleName();
+    private static final String LOG_TAG = TMDbJsonUtils.class.getSimpleName();
     private static final String SCHEME = "http";
     private static final String AUTHORITY = "api.themoviedb.org";
     private static final String API_VERSION_PARAM = "3";
@@ -34,7 +34,7 @@ public class QueryUtils {
     /**
      * This class's static methods & variables are directly accessible from the class name.
      */
-    private QueryUtils() {
+    private TMDbJsonUtils() {
     }
 
     public static List<Movie> getMovieDataFromJson(String sortingMethodPath, Context context) {
@@ -67,7 +67,7 @@ public class QueryUtils {
         try {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Problem constructing URL Object [QueryUtils].", e);
+            Log.e(LOG_TAG, "Problem constructing URL Object [TMDbJsonUtils].", e);
         }
 
         return url;
