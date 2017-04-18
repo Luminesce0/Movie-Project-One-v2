@@ -1,24 +1,25 @@
-package com.omegaspocktari.movieprojectone;
+package com.omegaspocktari.movieprojectone.utilities;
 
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.omegaspocktari.movieprojectone.BuildConfig;
+import com.omegaspocktari.movieprojectone.Movie;
+import com.omegaspocktari.movieprojectone.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.omegaspocktari.movieprojectone.utilities.NetworkUtils.createUrl;
+import static com.omegaspocktari.movieprojectone.utilities.NetworkUtils.makeHTTPRequest;
 
 /**
  * Created by ${Michael} on 11/7/2016.
@@ -61,75 +62,6 @@ public class TMDbJsonUtils {
         // Return list of movies
         return movies;
     }
-    private static URL createUrl(String stringUrl) {
-        URL url = null;
-
-        try {
-            url = new URL(stringUrl);
-        } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Problem constructing URL Object [TMDbJsonUtils].", e);
-        }
-
-        return url;
-    }
-
-    private static String makeHTTPRequest(URL url) throws IOException {
-        String jsonResponse = "";
-
-        // End HTTP Request if the url is null
-        if (url == null) {
-            return jsonResponse;
-        }
-
-        // URL Connection to acquire data from the web and the variable we'll be storing it in
-        HttpURLConnection urlConnection = null;
-        InputStream inputStream = null;
-
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setReadTimeout(1000);
-            urlConnection.setConnectTimeout(15000);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-
-            if (urlConnection.getResponseCode() == 200) {
-                inputStream = urlConnection.getInputStream();
-                jsonResponse = readFromStream(inputStream);
-            }
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Error making an HTTP Request... ", e);
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            } if (inputStream != null) {
-                inputStream.close();
-            }
-        }
-
-        return jsonResponse;
-    }
-
-    private static String readFromStream(InputStream inputStream) throws IOException {
-        StringBuilder output = new StringBuilder();
-
-        if (inputStream != null) {
-            // Byte stream to character stream. Decodes bytes utilizing the given charset.
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
-
-            //
-            // Good to wrap buffered reader around Readers whose read() operations may be costly.
-            BufferedReader reader = new BufferedReader(inputStreamReader);
-            // Simple loop to read through the inputStream.
-            String line = reader.readLine();
-            while (line != null) {
-                output.append(line);
-                line = reader.readLine();
-            }
-        }
-
-        return output.toString();
-    }
 
     private static List<Movie> extractMoviesFromJson(String jsonResponse, Context context) {
 
@@ -148,12 +80,14 @@ public class TMDbJsonUtils {
             final String TMDB_MOVIE_POSTER = "poster_path";
             final String TMDB_VOTE_AVERAGE = "vote_average";
             final String TMDB_PLOT_SYNOPSIS = "overview";
+            final String TMDB_MOVIE_ID = "id";
 
             String movieTitle;
             String movieReleaseDate;
             String moviePoster;
             String movieVoteAverage;
             String moviePlotSynopsis;
+            int movieId;
 
             JSONObject movieJson = new JSONObject(jsonResponse);
             JSONArray movieResultsArray = movieJson.getJSONArray(TMDB_RESULTS);
@@ -161,6 +95,7 @@ public class TMDbJsonUtils {
             for (int i = 0; i < movieResultsArray.length(); i++) {
 
                 // Gather relevant information from the result objects in movieResultsArray.
+                //
                 JSONObject movieJsonObject = movieResultsArray.getJSONObject(i);
                 movieTitle = movieJsonObject.getString(TMDB_TITLE);
                 movieReleaseDate = movieJsonObject.getString(TMDB_RELEASE_DATE);
@@ -169,10 +104,11 @@ public class TMDbJsonUtils {
                         + movieJsonObject.getString(TMDB_MOVIE_POSTER);
                 movieVoteAverage = movieJsonObject.getString(TMDB_VOTE_AVERAGE);
                 moviePlotSynopsis = movieJsonObject.getString(TMDB_PLOT_SYNOPSIS);
+                movieId = movieJsonObject.getInt(TMDB_MOVIE_ID);
 
                 // Create an [@link Movie} object with the parsed data.
                 Movie movieObject = new Movie(movieTitle, moviePlotSynopsis, movieVoteAverage,
-                        movieReleaseDate, moviePoster);
+                        movieReleaseDate, moviePoster, movieId);
 
                 movies.add(movieObject);
             }
