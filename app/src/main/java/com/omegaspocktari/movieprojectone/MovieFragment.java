@@ -2,11 +2,9 @@ package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -15,13 +13,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.omegaspocktari.movieprojectone.data.MoviePreferences;
 
 import java.util.ArrayList;
 
@@ -30,8 +27,9 @@ import java.util.ArrayList;
  */
 public class MovieFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<ArrayList<Movie>>,
-        MovieAdapter.MovieAdapterOnClickHandler {
+        MovieAdapter.MovieAdapterOnClickHandler{
 
+    // Logging Tag
     private final static String LOG_TAG = MovieFragment.class.getSimpleName();
 
     // Loader ID
@@ -40,15 +38,18 @@ public class MovieFragment extends Fragment implements
     // Key for movie results
     private static final String MOVIE_PREFERENCES = "preferences";
 
-    private RecyclerView mRecyclerView;
-    private ArrayList<Movie> mMovies = new ArrayList<>();
-    private RecyclerView.Adapter mAdapter;
-    private StaggeredGridLayoutManager staggeredGridLayoutManager;
-    private TextView mEmptyStateView;
+    // NetworkInfo to check network connectivity
     private NetworkInfo networkInfo;
-    private ProgressBar mProgressBar;
-    private ArrayList<Movie> mMovieList;
 
+    // Views for class
+    private ProgressBar mProgressBar;
+    private TextView mEmptyStateView;
+    private RecyclerView mRecyclerView;
+
+    // Adapter and relevant objects
+    private RecyclerView.Adapter mAdapter;
+    private ArrayList<Movie> mMovies = new ArrayList<>();
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,16 +57,6 @@ public class MovieFragment extends Fragment implements
 
         // Allow fragment to handle menu events.
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.movie_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -139,10 +130,7 @@ public class MovieFragment extends Fragment implements
         if (networkInfo != null && networkInfo.isConnected()) {
 
             // Gather preference with the default being popularity.
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-            String sortingPreference = prefs.getString(
-                    getString(R.string.pref_sorting_key),
-                    getString(R.string.pref_sorting_popularity));
+            String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
 
             Bundle movieUpdateBundle = new Bundle();
             movieUpdateBundle.putString(MOVIE_PREFERENCES, sortingPreference);
@@ -182,8 +170,6 @@ public class MovieFragment extends Fragment implements
 
         return new AsyncTaskLoader<ArrayList<Movie>>(getContext()) {
 
-            ArrayList<Movie> mMovieData = null;
-
             public void onStartLoading() {
                     mProgressBar.setVisibility(View.VISIBLE);
                     forceLoad();
@@ -194,10 +180,10 @@ public class MovieFragment extends Fragment implements
 
                 String jsonUrlPreferences = args.getString(MOVIE_PREFERENCES);
 
-                // Run the methods from QueryUtils to acquire an array list of movie objects
+                // Run the methods from TMDbJsonUtils to acquire an array list of movie objects
                 // derived from user preference inputs/defaults and JSON queries.
                 ArrayList<Movie> movieList = (ArrayList<Movie>)
-                        QueryUtils.getMovieDataFromJson(jsonUrlPreferences, getContext());
+                        TMDbJsonUtils.getMovieDataFromJson(jsonUrlPreferences, getContext());
 
                 // Return the output of QueryUtil methods.
                 return movieList;
@@ -217,7 +203,6 @@ public class MovieFragment extends Fragment implements
             mMovies.addAll(movieList);
             mAdapter.notifyDataSetChanged();
             mEmptyStateView.setVisibility(View.GONE);
-            mMovieList = movieList;
         } else {
             mEmptyStateView.setVisibility(View.VISIBLE);
         }
@@ -227,17 +212,6 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onLoadFinished(Loader<ArrayList<Movie>> loader, Movie data) {
 
-        //TODO:
-//        mProgressBar.setVisibility(View.GONE);
-//
-//        Log.d(LOG_TAG, "\n\nWhy is this second loader necessary?\n\n");
-//        // If the Array List was populated with movie objects insert them into the adapter.
-//        if (mMovieList != null) {
-//            mMovies.clear();
-//            mMovies.addAll(mMovieList);
-//            mAdapter.notifyDataSetChanged();
-//            mEmptyStateView.setVisibility(View.GONE);
-//        }
     }
 
     @Override
