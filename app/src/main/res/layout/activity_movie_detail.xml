@@ -97,6 +97,15 @@
                         android:numStars="5"
                         android:stepSize="0.01" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/b_favorite_movie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:text="@string/b_favorite"
+                    android:gravity="center" />
             </LinearLayout>
         </LinearLayout>
 

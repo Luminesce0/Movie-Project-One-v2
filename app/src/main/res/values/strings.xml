@@ -40,4 +40,8 @@
     <!-- Fragment Tags -->
     <string name="settings_fragment_tag">Settings Fragment</string>
 
+    <!-- Button Names -->
+    <string name="b_refresh">Refresh</string>
+    <string name="b_favorite">Favorite</string>
+
 </resources>

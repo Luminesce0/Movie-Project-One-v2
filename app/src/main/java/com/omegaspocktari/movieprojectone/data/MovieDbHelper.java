@@ -42,7 +42,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_FAVORITE_MOVIES_TABLE =
                 "CREATE TABLE " + FavoriteMovies.TABLE_NAME + " (" +
                         FavoriteMovies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        FavoriteMovies.COLUMN_MOVIE_ID + " LONG NOT NULL" +
+                        FavoriteMovies.COLUMN_MOVIE_ID + " LONG NOT NULL UNIQUE, " +
                         FavoriteMovies.COLUMN_MOVIE_TITLE + " TEXT NOT NULL" +
                         "); ";
 
