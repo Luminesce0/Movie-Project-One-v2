@@ -2,6 +2,8 @@ package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,16 +17,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
+import com.omegaspocktari.movieprojectone.data.MovieDbHelper;
 import com.omegaspocktari.movieprojectone.data.MoviePreferences;
+import com.omegaspocktari.movieprojectone.utilities.TMDbJsonUtils;
 
 import java.util.ArrayList;
 
 /**
  * Created by ${Michael} on 11/9/2016.
  */
+
+//TODO: understand more about savedinstancestates (Bundle passing)
+    // TODO: Possibly get rid of refresh button.
 public class MovieFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<ArrayList<Movie>>,
         MovieAdapter.MovieAdapterOnClickHandler{
@@ -45,11 +54,15 @@ public class MovieFragment extends Fragment implements
     private ProgressBar mProgressBar;
     private TextView mEmptyStateView;
     private RecyclerView mRecyclerView;
+    private Button mRefreshButton;
 
     // Adapter and relevant objects
     private RecyclerView.Adapter mAdapter;
     private ArrayList<Movie> mMovies = new ArrayList<>();
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
+
+    // Cursor and Database
+    private SQLiteDatabase mDb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,6 +97,16 @@ public class MovieFragment extends Fragment implements
         // Progress Bar
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.pb_network);
 
+        // Refresh Button
+        mRefreshButton = (Button) rootView.findViewById(R.id.b_refresh);
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateMovies();
+            }
+        });
+
         // Acquire a connectivity manager to see if the network is connected.
         ConnectivityManager connectivityManager = (ConnectivityManager)
                 getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -100,6 +123,12 @@ public class MovieFragment extends Fragment implements
         // Set the layout manager appropriately.
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+        // Create a DB helper
+        MovieDbHelper dbHelper = new MovieDbHelper(getContext());
+
+        // Get a readable database
+        mDb = dbHelper.getReadableDatabase();
 
         // Setup the adapter to a default
         mAdapter = new MovieAdapter(getContext(), mMovies, this);
@@ -180,10 +209,14 @@ public class MovieFragment extends Fragment implements
 
                 String jsonUrlPreferences = args.getString(MOVIE_PREFERENCES);
 
+
+                // Get all info and store in a cursor
+                Cursor cursor = getFavoriteMovies();
+
                 // Run the methods from TMDbJsonUtils to acquire an array list of movie objects
                 // derived from user preference inputs/defaults and JSON queries.
                 ArrayList<Movie> movieList = (ArrayList<Movie>)
-                        TMDbJsonUtils.getMovieDataFromJson(jsonUrlPreferences, getContext());
+                        TMDbJsonUtils.getMovieDataFromJson(getContext(), jsonUrlPreferences,  cursor);
 
                 // Return the output of QueryUtil methods.
                 return movieList;
@@ -203,8 +236,10 @@ public class MovieFragment extends Fragment implements
             mMovies.addAll(movieList);
             mAdapter.notifyDataSetChanged();
             mEmptyStateView.setVisibility(View.GONE);
+            mRefreshButton.setVisibility(View.GONE);
         } else {
             mEmptyStateView.setVisibility(View.VISIBLE);
+            mRefreshButton.setVisibility(View.VISIBLE);
         }
     }
 
@@ -217,5 +252,22 @@ public class MovieFragment extends Fragment implements
     @Override
     public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
 
+    }
+
+    /**
+     * Query the mDb and get all guests from the waitlist table
+     *
+     * @return Cursor containing the list of guests
+     */
+    private Cursor getFavoriteMovies() {
+        return mDb.query(
+                FavoriteMovies.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
     }
 }

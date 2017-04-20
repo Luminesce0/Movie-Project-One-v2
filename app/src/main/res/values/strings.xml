@@ -9,7 +9,7 @@
     <string name="poster_base_url">http://image.tmdb.org/t/p/</string>
 
     <!-- Text for an empty adapter -->
-    <string name="no_movies_found">No movies have been found \n or \nthe network is not connected...</string>
+    <string name="no_movies_found">No movies have been found \n or \n the network is not connected…</string>
 
     <!-- Key name for temperature unit preference -->
     <string name="pref_sorting_key">sorting</string>
@@ -20,15 +20,28 @@
     <!-- Labels for sorting method preference -->
     <string name="pref_sorting_label_popularity">Popular</string>
     <string name="pref_sorting_label_rating">Top Rated</string>
+    <string name="pref_sorting_label_favorites">Favorites</string>
 
-    <!-- Values in SharedPreferences for popularity and top rated sorting options -->
+    <!-- Values in SharedPreferences for popularity, top rated and favorites sorting options -->
     <string name="pref_sorting_popularity">movie/popular</string>
     <string name="pref_sorting_rating">movie/top_rated</string>
-    <string name="movie_key">movieItem</string>
+    <string name="pref_sorting_favorites">movie/</string>
+
+    <!-- Values for view Labels [Activity names, headers] -->
     <string name="movie_title_header">Movie Title</string>
     <string name="movie_rating_header">Rating</string>
     <string name="movie_release_header">Release Date</string>
     <string name="title_activity_settings">Settings Activity</string>
     <string name="title_activity_movie_details">Movie Details</string>
+
+    <!-- Key values -->
+    <string name="movie_key">movieItem</string>
+
+    <!-- Fragment Tags -->
     <string name="settings_fragment_tag">Settings Fragment</string>
+
+    <!-- Button Names -->
+    <string name="b_refresh">Refresh</string>
+    <string name="b_favorite">Favorite</string>
+
 </resources>
