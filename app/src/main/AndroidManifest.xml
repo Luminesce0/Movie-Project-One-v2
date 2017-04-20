@@ -5,6 +5,9 @@
     <!-- Allow for permission to access the internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Necessary for Database reading/Writing -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <!-- Allow for permission to access the network state -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -15,7 +18,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name="MovieActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,8 +38,7 @@
             android:name=".SettingsActivity"
             android:icon="@android:color/transparent"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MovieActivity"
-            android:theme="@style/SettingsTheme">
+            android:parentActivityName=".MovieActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.omegaspocktari.movieprojectone.MovieActivity" />
