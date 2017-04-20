@@ -245,9 +245,8 @@ public class TMDbJsonUtils {
         if (sortingMethodPath == popularity || sortingMethodPath == topRated) {
            return getMovieDataFromJson(sortingMethodPath, context);
         } else {
-           return getMovieFavoritesFromJson(sortingMethodPath, context, cursor);
+            return getMovieFavoritesFromJson(sortingMethodPath, context, cursor);
         }
-
     }
 }
 
