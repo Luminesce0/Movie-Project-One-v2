@@ -43,7 +43,11 @@ public class MovieDbHelper extends SQLiteOpenHelper{
                 "CREATE TABLE " + FavoriteMovies.TABLE_NAME + " (" +
                         FavoriteMovies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         FavoriteMovies.COLUMN_MOVIE_ID + " LONG NOT NULL UNIQUE, " +
-                        FavoriteMovies.COLUMN_MOVIE_TITLE + " TEXT NOT NULL" +
+                        FavoriteMovies.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
+                        FavoriteMovies.COLUMN_MOVIE_POSTER + " TEXT NOT NULL, " +
+                        FavoriteMovies.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
+                        FavoriteMovies.COLUMN_MOVIE_USER_RATING + " FLOAT NOT NULL, " +
+                        FavoriteMovies.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL " +
                         "); ";
 
         // Creating a table to hold favorite movie data with the SQL command above

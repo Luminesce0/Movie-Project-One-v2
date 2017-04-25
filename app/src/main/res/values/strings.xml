@@ -41,7 +41,8 @@
     <string name="settings_fragment_tag">Settings Fragment</string>
 
     <!-- Button Names -->
-    <string name="b_refresh">Refresh</string>
-    <string name="b_favorite">Favorite</string>
+    <string name="btn_refresh">Refresh</string>
+    <string name="btn_favorite_true">Favorite</string>
+    <string name="btn_favorite_false">Unfavorite</string>
 
 </resources>

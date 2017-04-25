@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/pb_network"
         android:layout_gravity="center"
-        android:text="@string/b_refresh"
+        android:text="@string/btn_refresh"
         android:layout_margin="16dp"
         android:gravity="center" />
 

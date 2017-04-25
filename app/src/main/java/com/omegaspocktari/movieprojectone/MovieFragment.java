@@ -260,14 +260,11 @@ public class MovieFragment extends Fragment implements
      * @return Cursor containing the list of guests
      */
     private Cursor getFavoriteMovies() {
-        return mDb.query(
-                FavoriteMovies.TABLE_NAME,
+        return getContext().getContentResolver().query(
+                FavoriteMovies.CONTENT_URI,
                 null,
                 null,
                 null,
-                null,
-                null,
-                null
-        );
+                null);
     }
 }
