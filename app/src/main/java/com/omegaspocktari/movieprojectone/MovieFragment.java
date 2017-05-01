@@ -144,11 +144,16 @@ public class MovieFragment extends Fragment implements
     // TODO: Update this with other stuff.
     private void updateMovies() {
         Log.d(LOG_TAG, "updateMovies()");
-        // Should a network connection be present, attempt to fetch data.
-        if (networkInfo != null && networkInfo.isConnected()) {
+
+        String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
+
+        // Should a network connection be present, attempt to fetch data,
+        // however, should the sorting preference be favorites, bypass network
+        // for offline capabilities.
+        if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
+        || (networkInfo != null && networkInfo.isConnected())) {
 
             // Gather preference with the default being popularity.
-            String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
 
             Bundle movieUpdateBundle = new Bundle();
             movieUpdateBundle.putString(MOVIE_PREFERENCES, sortingPreference);
