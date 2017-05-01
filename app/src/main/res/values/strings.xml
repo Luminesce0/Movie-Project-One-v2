@@ -8,8 +8,11 @@
     <string name="poster_size">w185</string>
     <string name="poster_base_url">http://image.tmdb.org/t/p/</string>
 
-    <!-- Text for an empty adapter -->
+    <!-- Text for an empty adapter of popularity and rating -->
     <string name="no_movies_found">No movies have been found \n or \n the network is not connected…</string>
+
+    <!-- Text for an empty adapter of favorites -->
+    <string name="no_movies_favorited">No movies have been favorited. \n Add some then come back!</string>
 
     <!-- Key name for temperature unit preference -->
     <string name="pref_sorting_key">sorting</string>

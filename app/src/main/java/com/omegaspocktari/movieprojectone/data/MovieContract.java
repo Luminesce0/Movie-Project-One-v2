@@ -19,7 +19,7 @@ public class MovieContract {
     public static final String PATH_FAVORITE_MOVIES = "favoriteMovies";
 
     // Path for accessing data within movie directory
-    public static final String PATH_MOVIES = "movies";
+    public static final String PATH_REGULAR_MOVIES = "regularMovies";
 
     public static final class FavoriteMovies implements BaseColumns {
 
@@ -29,15 +29,25 @@ public class MovieContract {
 
         // Name for favorite movie table
         public static final String TABLE_NAME = "favoriteMovies";
+    }
 
+    public static final class RegularMovies implements BaseColumns {
+
+        // FavoriteMovies content uri
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_REGULAR_MOVIES).build();
+
+        // Name for favorite movie table
+        public static final String TABLE_NAME = "regularMovies";
+    }
+
+    public static final class MovieColumns implements BaseColumns {
         // ID for the movie
         public static final String COLUMN_MOVIE_ID = "id";
 
         // Title for the movie
         public static final String COLUMN_MOVIE_TITLE = "title";
 
-        // TODO: Look into this
-        // Movie poster
         public static final String COLUMN_MOVIE_POSTER = "posterPath";
 
         // Synopsis

@@ -1,7 +1,7 @@
 package com.omegaspocktari.movieprojectone;
 
 import android.content.Context;
-import android.support.v4.content.Loader;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,9 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 /**
  * Created by ${Michael} on 11/4/2016.
@@ -20,13 +19,17 @@ import java.util.ArrayList;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
     private final MovieAdapterOnClickHandler mClickHandler;
-    private ArrayList<Movie> mMoviesList;
+    private Cursor mCursor;
     private Context mContext;
 
-    public MovieAdapter(Context context, ArrayList<Movie> movieList, MovieAdapterOnClickHandler clickHandler) {
-        mMoviesList = movieList;
+    public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
     }
 
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,11 +41,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         MovieViewHolder viewHolder = new MovieViewHolder(layoutView);
 
 
+        Log.d(LOG_TAG, "MovieViewHolder");
         return viewHolder;
     }
 
-    public void onBindViewHolder(MovieViewHolder holder, final int position) {
-        holder.bind(mMoviesList.get(position), mClickHandler);
+    public void onBindViewHolder(MovieViewHolder holder, int position) {
+        Log.d(LOG_TAG, "onBindViewHolder");
+        mCursor.moveToPosition(position);
+        holder.bind(mCursor);
     }
 
     /**
@@ -52,25 +58,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      */
     @Override
     public int getItemCount() {
-        return mMoviesList.size();
+        if (mCursor == null) {
+            return 0;
+        } else {
+            return mCursor.getCount();
+        }
     }
 
     // Create an MovieAdapterOnClickHandler interface.
     public interface MovieAdapterOnClickHandler {
-        void onListItemClick(Movie movie);
-
-        void onLoadFinished(Loader<ArrayList<Movie>> loader, Movie data);
+        void onListItemClick(int movie);
     }
 
     /**
      * MovieViewHolder for MovieAdapter.
      */
-    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final String LOG_TAG = MovieViewHolder.class.getSimpleName();
 
         // ImageView to display a movie poster
         public ImageView listItemMoviePoster;
-        private Movie listItemMovie;
 
         /**
          * Constructor for MovieViewHolder. The constructor obtains a reference to the ImageViews
@@ -83,20 +90,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             itemView.setOnClickListener(this);
         }
 
-        public void bind(final Movie movie, final MovieAdapterOnClickHandler listener) {
+        public void bind(Cursor movieCursor) {
 
-            // Here we will set all the relevant data from the current movie to
-            // the list item.
+            Log.d(LOG_TAG, "Does movie Cursor equal null?");
+            if (movieCursor != null) {
+                String photoPath = movieCursor.getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
+                // Binding picture to the relevant view
+                Log.d(LOG_TAG, "No!" + photoPath);
+                Picasso.with(itemView.getContext())
+                        .load(photoPath)
+                        .into(listItemMoviePoster);
 
-            // Binding picture to the relevant view
-            Picasso.with(itemView.getContext())
-                    .load(movie.getMoviePoster())
-                    // TODO 1: Ehhyyy! Do this part.
-//                    .placeholder()
-//                    .error()
-                    .into(listItemMoviePoster);
-
-            listItemMovie = movie;
+            } else {
+                // Do Nothing
+                Log.d(LOG_TAG, "yes!");
+            }
         }
 
         /**
@@ -107,8 +115,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         @Override
         public void onClick(View v) {
             Log.d(LOG_TAG, "\n\nThis is the onClick run within the MovieViewHolder\n\n");
-            Movie movie = listItemMovie;
-            mClickHandler.onListItemClick(movie);
+            int adapterPosition = getAdapterPosition();
+
+            mClickHandler.onListItemClick(adapterPosition);
         }
     }
 }

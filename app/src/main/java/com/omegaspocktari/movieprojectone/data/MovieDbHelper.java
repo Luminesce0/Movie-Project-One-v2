@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
+import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
+
 import static com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
 
 /**
@@ -13,10 +16,10 @@ import static com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovi
 public class MovieDbHelper extends SQLiteOpenHelper{
 
     // Database file name
-    public static final String DATABASE_NAME = "favoriteMovies.db";
+    public static final String DATABASE_NAME = "TMDb.db";
 
     // Current version of the database schema
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
 
     /**
      * Create a helper object to create, open, and/or manage a database.
@@ -42,16 +45,28 @@ public class MovieDbHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_FAVORITE_MOVIES_TABLE =
                 "CREATE TABLE " + FavoriteMovies.TABLE_NAME + " (" +
                         FavoriteMovies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        FavoriteMovies.COLUMN_MOVIE_ID + " LONG NOT NULL UNIQUE, " +
-                        FavoriteMovies.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
-                        FavoriteMovies.COLUMN_MOVIE_POSTER + " TEXT NOT NULL, " +
-                        FavoriteMovies.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
-                        FavoriteMovies.COLUMN_MOVIE_USER_RATING + " FLOAT NOT NULL, " +
-                        FavoriteMovies.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL " +
+                        MovieColumns.COLUMN_MOVIE_ID + " LONG NOT NULL UNIQUE, " +
+                        MovieColumns.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_POSTER + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_USER_RATING + " FLOAT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL " +
                         "); ";
 
-        // Creating a table to hold favorite movie data with the SQL command above
+        final String SQL_CREATE_MOVIES_TABLE =
+                "CREATE TABLE " + RegularMovies.TABLE_NAME + " (" +
+                        RegularMovies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        MovieColumns.COLUMN_MOVIE_ID + " LONG NOT NULL UNIQUE, " +
+                        MovieColumns.COLUMN_MOVIE_TITLE + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_POSTER + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_SYNOPSIS + " TEXT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_USER_RATING + " FLOAT NOT NULL, " +
+                        MovieColumns.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL " +
+                        "); ";
+
+        // Creating a table to hold movie data with the SQL command above
         db.execSQL(SQL_CREATE_FAVORITE_MOVIES_TABLE);
+        db.execSQL(SQL_CREATE_MOVIES_TABLE);
     }
 
     /**
@@ -78,6 +93,7 @@ public class MovieDbHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO: This is the last implementation learned. Create method that stores data instead
         db.execSQL("DROP TABLE IF EXISTS " + FavoriteMovies.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + RegularMovies.TABLE_NAME);
         onCreate(db);
     }
 }
