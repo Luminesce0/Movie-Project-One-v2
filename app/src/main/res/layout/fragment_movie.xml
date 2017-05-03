@@ -31,9 +31,9 @@
         android:id="@+id/b_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/pb_network"
+        android:layout_below="@+id/tv_no_results"
         android:layout_gravity="center"
-        android:text="@string/b_refresh"
+        android:text="@string/btn_refresh"
         android:layout_margin="16dp"
         android:gravity="center" />
 

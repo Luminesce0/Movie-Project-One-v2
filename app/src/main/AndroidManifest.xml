@@ -6,7 +6,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Necessary for Database reading/Writing -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <!-- Allow for permission to access the network state -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,6 +17,8 @@
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- MovieActivity -->
         <activity
             android:name="MovieActivity"
             android:label="@string/app_name"
@@ -26,6 +29,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MovieDetailActivity -->
         <activity
             android:name=".MovieDetailActivity"
             android:label="@string/title_activity_movie_details"
@@ -34,6 +39,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.omegaspocktari.movieprojectone.MovieActivity" />
         </activity>
+
+        <!-- SettingsActivity -->
         <activity
             android:name=".SettingsActivity"
             android:icon="@android:color/transparent"
@@ -43,6 +50,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.omegaspocktari.movieprojectone.MovieActivity" />
         </activity>
+
+        <!-- MovieContentProvider -->
+        <provider
+            android:name="com.omegaspocktari.movieprojectone.data.MovieContentProvider"
+            android:authorities="com.omegaspocktari.movieprojectone"
+            android:exported="false" />
     </application>
 
 </manifest>

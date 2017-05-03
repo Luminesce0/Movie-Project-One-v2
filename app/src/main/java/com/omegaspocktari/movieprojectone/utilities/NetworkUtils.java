@@ -25,7 +25,7 @@ public class NetworkUtils {
         try {
             url = new URL(stringUrl);
         } catch (MalformedURLException e) {
-            Log.e(LOG_TAG, "Problem constructing URL Object [TMDbJsonUtils].", e);
+            Log.e(LOG_TAG, "Problem constructing URL Object [TMDbUtils].", e);
         }
 
         return url;

@@ -18,7 +18,7 @@ public class Movie implements Serializable {
     private String mMovieRelease;
     private String mMoviePoster;
     private int mMovieId;
-
+    private boolean mIsMovieAFavorite;
     // TODO: Add reviews/trailer bits
 
     public Movie(String mMovieTitle, String mMoviePlot, String mMovieUserRating, String mMovieRelease,
