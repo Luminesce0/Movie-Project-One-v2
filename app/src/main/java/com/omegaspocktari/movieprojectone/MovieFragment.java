@@ -147,7 +147,7 @@ public class MovieFragment extends Fragment implements
 
         String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
 
-        // Should a network connection be present, attempt to fetch data,
+        // Should a network connection be present, attempt to fetch data
         // however, should the sorting preference be favorites, bypass network
         // for offline capabilities.
         if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
@@ -244,17 +244,17 @@ public class MovieFragment extends Fragment implements
         // Hide progress bar
         mProgressBar.setVisibility(View.GONE);
 
-        // If the Array List was populated with movie objects insert them into the adapter.
-        if (movieList != null && movieList.getCount() > 0) {
+        // If the cursor has movie rows
+        if (movieList != null && movieList.moveToFirst()) {
             mAdapter.swapCursor(movieList);
             mEmptyStateView.setVisibility(View.GONE);
             mRefreshButton.setVisibility(View.GONE);
             Log.d(LOG_TAG, "if Success! Adapter Swapped");
 
-        } else if (TMDbUtils.currentSortingMethod.equals(R.string.pref_sorting_favorites)) {
+        } else if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
             mEmptyStateView.setVisibility(View.VISIBLE);
             mEmptyStateView.setText(R.string.no_movies_favorited);
-            mRefreshButton.setVisibility(View.VISIBLE);
+            mRefreshButton.setVisibility(View.GONE);
             Log.d(LOG_TAG, "No favorite movies");
         } else {
             mEmptyStateView.setVisibility(View.VISIBLE);

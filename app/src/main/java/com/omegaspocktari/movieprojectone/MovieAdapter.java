@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
+import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -94,12 +95,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             Log.d(LOG_TAG, "Does movie Cursor equal null?");
             if (movieCursor != null) {
+
                 String photoPath = movieCursor.getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
-                // Binding picture to the relevant view
-                Log.d(LOG_TAG, "No!" + photoPath);
-                Picasso.with(itemView.getContext())
-                        .load(photoPath)
-                        .into(listItemMoviePoster);
+
+                if (TMDbUtils.currentSortingMethod.equals(mContext.getString(R.string.pref_sorting_favorites))) {
+                    Log.d(LOG_TAG, "Inside the favorite utils");
+                    String movieId = movieCursor.
+                            getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
+                    String moviePath = movieCursor.
+                            getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
+                    // Binding picture to the relevant view
+                    TMDbUtils.loadImageFromSystem(moviePath, listItemMoviePoster);
+                } else {
+                    Log.d(LOG_TAG, "Inside the Popularity/Rating utils");
+                    // Binding picture to the relevant view
+                    Picasso.with(itemView.getContext())
+                            .load(photoPath)
+                            .into(listItemMoviePoster);
+                }
 
             } else {
                 // Do Nothing

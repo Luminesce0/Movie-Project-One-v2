@@ -2,9 +2,13 @@ package com.omegaspocktari.movieprojectone.utilities;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.omegaspocktari.movieprojectone.BuildConfig;
 import com.omegaspocktari.movieprojectone.R;
@@ -16,6 +20,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -158,6 +166,43 @@ public class TMDbUtils {
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Problem parsing the JSON results [Query Utils].", e);
+        }
+    }
+
+    public static String saveToInternalStorage(Bitmap bitmapImage, String imageFile, Context context) {
+        ContextWrapper cw = new ContextWrapper(context);
+
+        File filePath = new File (cw.getFilesDir(), imageFile);
+        Log.d(LOG_TAG, "File Directory inside saveToInternalStorage: " + filePath);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(filePath);
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally
+        {
+            try{
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return filePath.getAbsolutePath();
+    }
+
+    public static void loadImageFromSystem(String imagePath, ImageView iv) {
+        FileInputStream fis = null;
+        try {
+//            File moviePoster = new File(imagePath);
+            fis = new FileInputStream (new File(imagePath));
+//            Log.d(LOG_TAG, "File Directory inside loadImageFromSystem " + moviePoster);
+//            Bitmap moviePosterImage = BitmapFactory.decodeStream(new FileInputStream(moviePoster));
+            Bitmap moviePosterImage = BitmapFactory.decodeStream(fis);
+            iv.setImageBitmap(moviePosterImage);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

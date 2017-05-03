@@ -196,7 +196,7 @@ public class MovieContentProvider extends ContentProvider {
             case FAVORITE_MOVIES:
                 // Delete all database entries.
                 // TODO: Potentially remove if not necessary
-                rowsDeleted = db.delete(FavoriteMovies.TABLE_NAME, null, null);
+                rowsDeleted = db.delete(FavoriteMovies.TABLE_NAME, selection, selectionArgs);
                 break;
             case FAVORITE_MOVIES_WITH_ID:
                 // Acquire the movie ID from the URI path
@@ -209,7 +209,7 @@ public class MovieContentProvider extends ContentProvider {
             case REGULAR_MOVIES:
                 // Delete all database entries.
                 // TODO: Potentially remove if not necessary
-                rowsDeleted = db.delete(RegularMovies.TABLE_NAME, null, null);
+                rowsDeleted = db.delete(RegularMovies.TABLE_NAME, selection, selectionArgs);
                 break;
             case REGULAR_MOVIES_WITH_ID:
                 // Acquire the movie ID from the URI path
