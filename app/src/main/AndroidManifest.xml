@@ -56,6 +56,18 @@
             android:name="com.omegaspocktari.movieprojectone.data.MovieContentProvider"
             android:authorities="com.omegaspocktari.movieprojectone"
             android:exported="false" />
+
+        <service
+            android:name=".sync.MovieSyncIntentService"
+            android:exported="false" />
+
+        <service
+            android:name=".sync.MovieFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

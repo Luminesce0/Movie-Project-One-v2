@@ -8,6 +8,8 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
+import com.omegaspocktari.movieprojectone.sync.MovieSyncUtils;
+
 /**
  * Created by ${Michael} on 4/13/2017.
  */
@@ -48,16 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
-    /**
-     * Called when a shared preference is changed, added, or removed. This
-     * may be called even if a preference is set to its existing value.
-     * <p>
-     * <p>This callback will be run on your main thread.
-     *
-     * @param sharedPreferences The {@link SharedPreferences} that received
-     *                          the change.
-     * @param key               The key of the preference that was changed, added, or
-     */
+    // When a shared preference is changed, added or removed this will be called.
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // Update preferences if they are changed after initial @onCreatePreferences
@@ -65,6 +58,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         if (null != preference) {
             if (!(preference instanceof CheckBoxPreference)) {
                 setPreferenceSummary(preference, sharedPreferences.getString(key, ""));
+
+                MovieSyncUtils.startImmediateSync(getActivity());
             }
         }
     }

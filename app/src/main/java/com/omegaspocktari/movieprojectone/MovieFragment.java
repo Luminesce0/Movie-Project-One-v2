@@ -1,17 +1,11 @@
 package com.omegaspocktari.movieprojectone;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -23,8 +17,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.omegaspocktari.movieprojectone.data.MovieContract;
-import com.omegaspocktari.movieprojectone.data.MoviePreferences;
+import com.omegaspocktari.movieprojectone.sync.MovieSyncUtils;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by ${Michael} on 11/9/2016.
@@ -33,7 +29,6 @@ import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 //TODO: understand more about savedinstancestates (Bundle passing)
 // TODO: Possibly get rid of refresh button.
 public class MovieFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>,
         MovieAdapter.MovieAdapterOnClickHandler {
 
     // Logging Tag
@@ -44,9 +39,6 @@ public class MovieFragment extends Fragment implements
 
     // Key for movie results
     private static final String MOVIE_PREFERENCES = "preferences";
-
-    // NetworkInfo to check network connectivity
-    private NetworkInfo networkInfo;
 
     // Views for class
     private ProgressBar mProgressBar;
@@ -106,13 +98,6 @@ public class MovieFragment extends Fragment implements
             }
         });
 
-        // Acquire a connectivity manager to see if the network is connected.
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Get the current active network's info.
-        networkInfo = connectivityManager.getActiveNetworkInfo();
-
         // This will allow for our RecyclerView to be bound to the layout programmatically.
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.rv_movie_fragment);
 
@@ -129,6 +114,9 @@ public class MovieFragment extends Fragment implements
         // Set the adapter to our recycler view
         mRecyclerView.setAdapter(mAdapter);
 
+        // Initialize movie data from TMDb if database is empty
+        MovieSyncUtils.initialize(getContext());
+
         return rootView;
     }
 
@@ -143,30 +131,28 @@ public class MovieFragment extends Fragment implements
 
     // TODO: Update this with other stuff.
     private void updateMovies() {
-        Log.d(LOG_TAG, "updateMovies()");
 
-        String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
+        Cursor movieList = TMDbUtils.getMovieData(getContext());
+        if (movieList != null && movieList.moveToFirst()) {
+            mAdapter.swapCursor(movieList);
+            mEmptyStateView.setVisibility(View.GONE);
+            mRefreshButton.setVisibility(View.GONE);
+            Log.d(LOG_TAG, "if Success! Adapter Swapped");
 
-        // Should a network connection be present, attempt to fetch data
-        // however, should the sorting preference be favorites, bypass network
-        // for offline capabilities.
-        if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
-        || (networkInfo != null && networkInfo.isConnected())) {
-
-            // Gather preference with the default being popularity.
-
-            Bundle movieUpdateBundle = new Bundle();
-            movieUpdateBundle.putString(MOVIE_PREFERENCES, sortingPreference);
-
-            LoaderManager loaderManager = getActivity().getSupportLoaderManager();
-            Loader<String> movieLoader = loaderManager.getLoader(MOVIE_RESULTS_LOADER);
-            if (movieLoader == null) {
-                loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
-            } else {
-                loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
-                // Do nothing.
-            }
+            // if sorting method equals favorite movies show this error
+        } else if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
+            mEmptyStateView.setVisibility(View.VISIBLE);
+            mEmptyStateView.setText(R.string.no_movies_favorited);
+            mRefreshButton.setVisibility(View.GONE);
+            Log.d(LOG_TAG, "No favorite movies");
+            // if sorting method is not equal to favorites, show this response
+        } else {
+            mEmptyStateView.setVisibility(View.VISIBLE);
+            mEmptyStateView.setText(R.string.no_movies_found);
+            mRefreshButton.setVisibility(View.VISIBLE);
+            Log.d(LOG_TAG, "No rated/popular movies");
         }
+
     }
 
     @Override
@@ -191,81 +177,5 @@ public class MovieFragment extends Fragment implements
         }
 
         startActivity(movieDetail);
-    }
-
-    /**
-     * Instantiate and return a new Loader for the given ID.
-     *
-     * @param id   The ID whose loader is to be created.
-     * @param args Any arguments supplied by the caller.
-     * @return Return a new Loader instance that is ready to start loading.
-     */
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
-        Log.d(LOG_TAG, "onCreateLoader()");
-        // Generate an AsyncTask that will obtain the movie information within loader.
-
-        return new AsyncTaskLoader<Cursor>(getContext()) {
-
-            public void onStartLoading() {
-                Log.d(LOG_TAG, "onStartLoading()");
-
-                mProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public Cursor loadInBackground() {
-
-                Log.d(LOG_TAG, "loadInBackground()");
-                // Acquire the preference for the listed movies
-                String jsonUrlPreferences = args.getString(MOVIE_PREFERENCES);
-
-                // Run the methods from TMDbUtils to acquire an array list of movie objects
-                // derived from user preference inputs/defaults and JSON queries.
-                if (jsonUrlPreferences.equals(getString(R.string.pref_sorting_popularity)) ||
-                        jsonUrlPreferences.equals((getString(R.string.pref_sorting_rating)))) {
-                    Log.d(LOG_TAG, "" + jsonUrlPreferences);
-                    Log.d(LOG_TAG, "Returning POPULARITY or RATING results");
-                    return TMDbUtils.getMovieDataFromJson(getContext(), jsonUrlPreferences);
-
-                } else {
-                    // Derive data set by favoriting movies
-                    Log.d(LOG_TAG, "" + jsonUrlPreferences);
-                    Log.d(LOG_TAG, "Returning FAVORITES");
-                    return TMDbUtils.getFavoriteMovieData(getContext());
-                }
-
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor movieList) {
-        // Hide progress bar
-        mProgressBar.setVisibility(View.GONE);
-
-        // If the cursor has movie rows
-        if (movieList != null && movieList.moveToFirst()) {
-            mAdapter.swapCursor(movieList);
-            mEmptyStateView.setVisibility(View.GONE);
-            mRefreshButton.setVisibility(View.GONE);
-            Log.d(LOG_TAG, "if Success! Adapter Swapped");
-
-        } else if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
-            mEmptyStateView.setVisibility(View.VISIBLE);
-            mEmptyStateView.setText(R.string.no_movies_favorited);
-            mRefreshButton.setVisibility(View.GONE);
-            Log.d(LOG_TAG, "No favorite movies");
-        } else {
-            mEmptyStateView.setVisibility(View.VISIBLE);
-            mEmptyStateView.setText(R.string.no_movies_found);
-            mRefreshButton.setVisibility(View.VISIBLE);
-            Log.d(LOG_TAG, "No rated/popular movies");
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
     }
 }
