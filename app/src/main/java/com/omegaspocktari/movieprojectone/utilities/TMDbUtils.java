@@ -11,10 +11,12 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.omegaspocktari.movieprojectone.BuildConfig;
+import com.omegaspocktari.movieprojectone.MovieDetailInfo;
 import com.omegaspocktari.movieprojectone.R;
 import com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
 import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
+import com.omegaspocktari.movieprojectone.data.MoviePreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +50,18 @@ public class TMDbUtils {
     private TMDbUtils() {
     }
 
+    public static Cursor getMovieData(Context context) {
+        String sortingPreference = MoviePreferences.getPreferredMovieSorting(context);
+
+        if (sortingPreference.equals(context.getString(R.string.pref_sorting_favorites))) {
+            return getFavoriteMovieData(context);
+        } else {
+            return getRegularMovieData(context);
+        }
+
+
+    }
+
     public static Cursor getFavoriteMovieData(Context context) {
         // Used within onFinishedLoader
         currentSortingMethod = context.getString(R.string.pref_sorting_favorites);
@@ -60,7 +74,19 @@ public class TMDbUtils {
                 null);
     }
 
-    public static Cursor getMovieDataFromJson(Context context, String sortingMethodPath) {
+    public static Cursor getRegularMovieData(Context context) {
+        // Used within onFinishedLoader
+        currentSortingMethod = context.getString(R.string.pref_sorting_favorites);
+
+        return context.getContentResolver().query(
+                FavoriteMovies.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+    }
+
+    public static void extractMovieJsonDataToDatabase(Context context, String sortingMethodPath) {
         // Used within onFinishedLoader
         currentSortingMethod = sortingMethodPath;
 
@@ -83,17 +109,10 @@ public class TMDbUtils {
 
         // Extract relevant fields from the JSON Response & create a list of news items through parsing
 
-        extractJsonDataToCursor(jsonResponse, context);
-
-        return context.getContentResolver().query(
-                RegularMovies.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
+        putMovieDataIntoDatabase(jsonResponse, context);
     }
 
-    private static void extractJsonDataToCursor(String jsonResponse, Context context) {
+    private static void putMovieDataIntoDatabase(String jsonResponse, Context context) {
         int deleted = context.getContentResolver().delete(RegularMovies.CONTENT_URI, null, null);
         Log.d(LOG_TAG, "DELETED MOVIES: " + deleted);
         try {
@@ -169,10 +188,28 @@ public class TMDbUtils {
         }
     }
 
+    public static MovieDetailInfo generateMovieDetailInfo(Cursor movieCursor) {
+        MovieDetailInfo mdi = new MovieDetailInfo();
+
+        // Gathering all movie data
+        mdi.movieTitle = movieCursor.
+                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_TITLE));
+        mdi.moviePlot = movieCursor.
+                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_SYNOPSIS));
+        mdi.movieUserRating = movieCursor.
+                getFloat(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_USER_RATING));
+        mdi.movieReleaseDate = movieCursor.
+                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_RELEASE_DATE));
+        mdi.moviePoster = movieCursor.
+                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
+
+        return mdi;
+    }
+
     public static String saveToInternalStorage(Bitmap bitmapImage, String imageFile, Context context) {
         ContextWrapper cw = new ContextWrapper(context);
 
-        File filePath = new File (cw.getFilesDir(), imageFile);
+        File filePath = new File(cw.getFilesDir(), imageFile);
         Log.d(LOG_TAG, "File Directory inside saveToInternalStorage: " + filePath);
 
         FileOutputStream fos = null;
@@ -181,9 +218,8 @@ public class TMDbUtils {
             bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } finally
-        {
-            try{
+        } finally {
+            try {
                 fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -196,7 +232,7 @@ public class TMDbUtils {
         FileInputStream fis = null;
         try {
 //            File moviePoster = new File(imagePath);
-            fis = new FileInputStream (new File(imagePath));
+            fis = new FileInputStream(new File(imagePath));
 //            Log.d(LOG_TAG, "File Directory inside loadImageFromSystem " + moviePoster);
 //            Bitmap moviePosterImage = BitmapFactory.decodeStream(new FileInputStream(moviePoster));
             Bitmap moviePosterImage = BitmapFactory.decodeStream(fis);

@@ -3,6 +3,7 @@ package com.omegaspocktari.movieprojectone;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -19,14 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
 import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
+import com.omegaspocktari.movieprojectone.databinding.ActivityMovieDetailBinding;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
 
@@ -53,12 +52,8 @@ public class MovieDetailActivity extends AppCompatActivity implements
     private Cursor movie;
 
     // Views
-    private TextView mTitle;
-    private TextView mRelease;
-    private TextView mPlot;
-    private RatingBar mRating;
+    ActivityMovieDetailBinding mBinding;
     private Button mFavoriteMovieButton;
-    private ImageView mPoster;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,13 +63,10 @@ public class MovieDetailActivity extends AppCompatActivity implements
         // Enable picasso logging
         Picasso.with(this).setLoggingEnabled(true);
 
-        // Get Views.
-        mPoster = (ImageView) findViewById(R.id.iv_movie_poster);
-        mTitle = (TextView) findViewById(R.id.movie_title);
-        mRelease = (TextView) findViewById(R.id.movie_release);
-        mRating = (RatingBar) findViewById(R.id.movie_rating);
-        mPlot = (TextView) findViewById(R.id.movie_plot);
-        mFavoriteMovieButton = (Button) findViewById(R.id.b_favorite_movie);
+        // Replaces set content view
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
+
+        mFavoriteMovieButton = (Button) findViewById(R.id.bFavoriteMovie);
 
         // Acquire the correct row to load
         Bundle bundle = getIntent().getExtras();
@@ -86,44 +78,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
         Log.d(LOG_TAG, "Position: " + mPosition);
         // Connect activity to loader
         getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
-    }
-
-    // Gather all movie relevant data and set the data to relevant views
-    private void GenerateMovieDetailPage(Cursor movieCursor) {
-
-        // Gathering all movie data
-        String movieTitle = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_TITLE));
-        String moviePlot = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_SYNOPSIS));
-        Float movieUserRating = movieCursor.
-                getFloat(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_USER_RATING));
-        String movieReleaseDate = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_RELEASE_DATE));
-        String moviePoster = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
-
-        Log.d(LOG_TAG, "Movie Path: " + moviePoster);
-
-        if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
-            Log.d(LOG_TAG, "Inside the favorite utils");
-            String movieId = movieCursor.
-                    getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
-            TMDbUtils.loadImageFromSystem(moviePoster, mPoster);
-        } else {
-            Log.d(LOG_TAG, "Inside the Popularity/Rating utils");
-            // Setting movie data
-            Picasso.with(getApplicationContext())
-                    .load(moviePoster)
-                    .into(mPoster);
-        }
-
-
-        // Set View Data
-        mTitle.setText(movieTitle);
-        mRelease.setText(movieReleaseDate);
-        mRating.setRating((movieUserRating / 2));
-        mPlot.setText(moviePlot);
     }
 
     @Override
@@ -299,7 +253,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
             // Get movie id
             String movieId = movie.
                     getString(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
-            Bitmap bitmap = ((BitmapDrawable) mPoster.getDrawable()).getBitmap();
+            Bitmap bitmap = ((BitmapDrawable) mBinding.ivMoviePoster.getDrawable()).getBitmap();
 
             mFavoriteMovieLocation = TMDbUtils.saveToInternalStorage(bitmap, movieId, this);
 
@@ -332,61 +286,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
             movieDatabase.close();
         }
     }
-
-    // Citing: http://www.codexpedia.com/android/android-download-and-save-image-through-picasso/
-    // Helper method to addNewFavoriteMovie to download movie pictures for offline access
-//    private Target saveImageToSystem(Context context, final String imageName) {
-//
-//        Log.d(LOG_TAG, "Image Location: " + mFavoriteMovieLocation);
-//
-//
-//        return new Target() {
-//
-//            @Override
-//            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-//                new Thread(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        // Creates image file with directory and name
-//                        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-//                        final File myImageFile = new File(cw.getFilesDir(), imageName);
-//                        mFavoriteMovieLocation = myImageFile.getAbsolutePath();
-//
-//                        Log.d(LOG_TAG, "void Run inside bitmap");
-//
-//                        FileOutputStream fos = null;
-//                        try {
-//                            Log.d(LOG_TAG, "try");
-//                            fos = new FileOutputStream(myImageFile);
-//                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//                        } catch (IOException e) {
-//                            Log.d(LOG_TAG, "Catch");
-//                            e.printStackTrace();
-//                        } finally {
-//                            Log.d(LOG_TAG, "Finally");
-//                            try {
-//                                fos.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }).start();
-//            }
-//
-//            @Override
-//            public void onBitmapFailed(Drawable errorDrawable) {
-//                Log.d(LOG_TAG, "onBitmapFailed");
-//            }
-//
-//            @Override
-//            public void onPrepareLoad(Drawable placeHolderDrawable) {
-//                if (placeHolderDrawable != null) {
-//                }
-//            }
-//        };
-//    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -441,8 +340,9 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
         // Generate MovieDetailPage
         Log.d(LOG_TAG, "Generating Detail Page");
-        GenerateMovieDetailPage(data);
-        // Setup button
+        MovieDetailInfo mdi = TMDbUtils.generateMovieDetailInfo(data);
+        displayMovieDetails(mdi);
+
         // initialize button
         initializeMovieFavoriteButton(data);
     }
@@ -450,5 +350,22 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private void displayMovieDetails(MovieDetailInfo mdi) {
+        // Display picture with the correct means
+        if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
+            TMDbUtils.loadImageFromSystem(mdi.moviePoster, mBinding.ivMoviePoster);
+        } else {
+            Picasso.with(this)
+                    .load(mdi.moviePoster)
+                    .into(mBinding.ivMoviePoster);
+        }
+
+        // display the rest of the content
+        mBinding.tvMoviePlot.setText(mdi.moviePlot);
+        mBinding.tvMovieRelease.setText(mdi.movieReleaseDate);
+        mBinding.tvMovieTitle.setText(mdi.movieTitle);
+        mBinding.tvMovieRating.setRating(mdi.movieUserRating/2);
     }
 }
