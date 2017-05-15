@@ -54,8 +54,10 @@ public class TMDbUtils {
         String sortingPreference = MoviePreferences.getPreferredMovieSorting(context);
 
         if (sortingPreference.equals(context.getString(R.string.pref_sorting_favorites))) {
+            currentSortingMethod = MoviePreferences.getPreferredMovieSorting(context);
             return getFavoriteMovieData(context);
         } else {
+            currentSortingMethod = MoviePreferences.getPreferredMovieSorting(context);
             return getRegularMovieData(context);
         }
 
@@ -64,7 +66,6 @@ public class TMDbUtils {
 
     public static Cursor getFavoriteMovieData(Context context) {
         // Used within onFinishedLoader
-        currentSortingMethod = context.getString(R.string.pref_sorting_favorites);
 
         return context.getContentResolver().query(
                 FavoriteMovies.CONTENT_URI,
@@ -76,7 +77,6 @@ public class TMDbUtils {
 
     public static Cursor getRegularMovieData(Context context) {
         // Used within onFinishedLoader
-        currentSortingMethod = context.getString(R.string.pref_sorting_favorites);
 
         return context.getContentResolver().query(
                 FavoriteMovies.CONTENT_URI,

@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -57,9 +56,6 @@ public class MovieFragment extends Fragment implements
     // Adapter and relevant objects
     private MovieAdapter mAdapter;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
-    // Cursor and Database
-    private SQLiteDatabase mDb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,7 +148,7 @@ public class MovieFragment extends Fragment implements
         // for offline capabilities.
         if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
                 || (networkInfo != null && networkInfo.isConnected())) {
-
+            Log.d(LOG_TAG, "Inside if statement");
             // Gather preference with the default being popularity.
 
             Bundle movieUpdateBundle = new Bundle();
@@ -161,8 +157,10 @@ public class MovieFragment extends Fragment implements
             LoaderManager loaderManager = getActivity().getSupportLoaderManager();
             Loader<String> movieLoader = loaderManager.getLoader(MOVIE_RESULTS_LOADER);
             if (movieLoader == null) {
+                Log.d(LOG_TAG, "movieLoader == null" );
                 loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             } else {
+                Log.d(LOG_TAG, "movieLoader != null" );
                 loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             }
         }

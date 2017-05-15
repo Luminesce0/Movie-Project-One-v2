@@ -98,6 +98,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
                 String photoPath = movieCursor.getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
 
+                // Decide on the correct menans to locate photo data
                 if (TMDbUtils.currentSortingMethod.equals(mContext.getString(R.string.pref_sorting_favorites))) {
                     Log.d(LOG_TAG, "Inside the favorite utils");
                     String moviePath = movieCursor.
