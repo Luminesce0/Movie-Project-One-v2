@@ -151,7 +151,7 @@ public class MovieFragment extends Fragment implements
         // however, should the sorting preference be favorites, bypass network
         // for offline capabilities.
         if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
-        || (networkInfo != null && networkInfo.isConnected())) {
+                || (networkInfo != null && networkInfo.isConnected())) {
 
             // Gather preference with the default being popularity.
 
@@ -164,7 +164,6 @@ public class MovieFragment extends Fragment implements
                 loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             } else {
                 loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
-                // Do nothing.
             }
         }
     }
@@ -226,13 +225,14 @@ public class MovieFragment extends Fragment implements
                         jsonUrlPreferences.equals((getString(R.string.pref_sorting_rating)))) {
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);
                     Log.d(LOG_TAG, "Returning POPULARITY or RATING results");
-                    return TMDbUtils.getMovieDataFromJson(getContext(), jsonUrlPreferences);
+                    TMDbUtils.extractMovieJsonDataToDatabase(getContext(), jsonUrlPreferences);
+                    return TMDbUtils.getMovieData(getContext());
 
                 } else {
                     // Derive data set by favoriting movies
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);
                     Log.d(LOG_TAG, "Returning FAVORITES");
-                    return TMDbUtils.getFavoriteMovieData(getContext());
+                    return TMDbUtils.getMovieData(getContext());
                 }
 
             }

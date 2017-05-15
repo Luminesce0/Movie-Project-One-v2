@@ -364,8 +364,8 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
         // display the rest of the content
         mBinding.tvMoviePlot.setText(mdi.moviePlot);
-        mBinding.tvMovieRelease.setText(mdi.movieReleaseDate);
+        mBinding.tvMovieReleaseDate.setText(mdi.movieReleaseDate);
         mBinding.tvMovieTitle.setText(mdi.movieTitle);
-        mBinding.tvMovieRating.setRating(mdi.movieUserRating/2);
+        mBinding.rbRating.setRating(mdi.movieUserRating/2);
     }
 }

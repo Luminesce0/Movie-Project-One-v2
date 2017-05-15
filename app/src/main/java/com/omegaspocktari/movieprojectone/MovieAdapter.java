@@ -100,8 +100,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
                 if (TMDbUtils.currentSortingMethod.equals(mContext.getString(R.string.pref_sorting_favorites))) {
                     Log.d(LOG_TAG, "Inside the favorite utils");
-                    String movieId = movieCursor.
-                            getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
                     String moviePath = movieCursor.
                             getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
                     // Binding picture to the relevant view
