@@ -79,14 +79,14 @@ public class TMDbUtils {
         // Used within onFinishedLoader
 
         return context.getContentResolver().query(
-                FavoriteMovies.CONTENT_URI,
+                RegularMovies.CONTENT_URI,
                 null,
                 null,
                 null,
                 null);
     }
 
-    public static void extractMovieJsonDataToDatabase(Context context, String sortingMethodPath) {
+    public static Cursor extractMovieJsonDataToDatabase(Context context, String sortingMethodPath) {
         // Used within onFinishedLoader
         currentSortingMethod = sortingMethodPath;
 
@@ -110,6 +110,8 @@ public class TMDbUtils {
         // Extract relevant fields from the JSON Response & create a list of news items through parsing
 
         putMovieDataIntoDatabase(jsonResponse, context);
+
+        return getMovieData(context);
     }
 
     private static void putMovieDataIntoDatabase(String jsonResponse, Context context) {
@@ -169,7 +171,7 @@ public class TMDbUtils {
 //                     do nothing
                     movieDatabase.close();
                 } else {
-                    Log.d(LOG_TAG, "Iterration(Done): " + i);
+                    Log.d(LOG_TAG, "Iteration(Done): " + i);
                     Log.d(LOG_TAG, "Movie added! " + movieTitle);
                     ContentValues cv = new ContentValues();
                     cv.put(MovieColumns.COLUMN_MOVIE_ID, movieId);
@@ -188,6 +190,13 @@ public class TMDbUtils {
         }
     }
 
+    /**
+     * Ties movie details from the cursor to the MovieDetailInfo object in conjunction with the
+     * data binding util
+     *
+     * @param movieCursor
+     * @return
+     */
     public static MovieDetailInfo generateMovieDetailInfo(Cursor movieCursor) {
         MovieDetailInfo mdi = new MovieDetailInfo();
 
@@ -206,6 +215,14 @@ public class TMDbUtils {
         return mdi;
     }
 
+    /**
+     * Method to save an image to the internal storage if the movie is favorited
+     *
+     * @param bitmapImage
+     * @param imageFile
+     * @param context
+     * @return
+     */
     public static String saveToInternalStorage(Bitmap bitmapImage, String imageFile, Context context) {
         ContextWrapper cw = new ContextWrapper(context);
 
@@ -228,6 +245,12 @@ public class TMDbUtils {
         return filePath.getAbsolutePath();
     }
 
+    /**
+     * Method to load the saved image from the system's storage
+     *
+     * @param imagePath
+     * @param iv
+     */
     public static void loadImageFromSystem(String imagePath, ImageView iv) {
         FileInputStream fis = null;
         try {

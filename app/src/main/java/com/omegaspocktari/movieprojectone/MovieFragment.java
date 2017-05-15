@@ -223,9 +223,7 @@ public class MovieFragment extends Fragment implements
                         jsonUrlPreferences.equals((getString(R.string.pref_sorting_rating)))) {
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);
                     Log.d(LOG_TAG, "Returning POPULARITY or RATING results");
-                    TMDbUtils.extractMovieJsonDataToDatabase(getContext(), jsonUrlPreferences);
-                    return TMDbUtils.getMovieData(getContext());
-
+                    return TMDbUtils.extractMovieJsonDataToDatabase(getContext(), jsonUrlPreferences);
                 } else {
                     // Derive data set by favoriting movies
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);

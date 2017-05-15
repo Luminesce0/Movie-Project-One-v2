@@ -26,6 +26,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
+        Picasso.with(context).setLoggingEnabled(true);
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -108,6 +109,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 } else {
                     Log.d(LOG_TAG, "Inside the Popularity/Rating utils");
                     // Binding picture to the relevant view
+
                     Picasso.with(itemView.getContext())
                             .load(photoPath)
                             .into(listItemMoviePoster);
