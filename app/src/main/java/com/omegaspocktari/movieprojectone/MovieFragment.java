@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.omegaspocktari.movieprojectone.adapters.MovieAdapter;
 import com.omegaspocktari.movieprojectone.data.MovieContract;
 import com.omegaspocktari.movieprojectone.data.MoviePreferences;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
@@ -168,7 +169,7 @@ public class MovieFragment extends Fragment implements
 
     @Override
     public void onListItemClick(int id) {
-        Log.d(LOG_TAG, "\n\nThis is the onClick run within the instantiation of" +
+        Log.d(LOG_TAG, "\n\nThis is the onReviewClick run within the instantiation of" +
                 "mAdapter/creating a new MovieAdapter\n\n");
 
         Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);

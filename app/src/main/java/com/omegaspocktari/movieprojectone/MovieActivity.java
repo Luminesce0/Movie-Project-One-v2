@@ -2,6 +2,7 @@ package com.omegaspocktari.movieprojectone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,9 @@ public class MovieActivity extends AppCompatActivity {
                     .add(R.id.container, new MovieFragment())
                     .commit();
         }
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
     }
 
     @Override

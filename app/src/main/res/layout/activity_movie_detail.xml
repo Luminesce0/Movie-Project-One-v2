@@ -19,8 +19,10 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:cropToPadding="false"
                 android:scaleType="fitCenter"
@@ -30,25 +32,23 @@
                 app:layout_constraintRight_toLeftOf="@+id/ivMiddleDivider"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0"
-                tools:src="@android:drawable/alert_dark_frame"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp" />
+                tools:src="@android:drawable/alert_dark_frame" />
 
             <!-- Divider for the image -->
             <ImageView
                 android:id="@+id/ivMiddleDivider"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/iv_divider_color"
                 app:layout_constraintBottom_toTopOf="@+id/ivSynopsisDivider"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <!-- Movie Title Section -->
@@ -56,32 +56,32 @@
                 android:id="@+id/tvMovieTitleHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/movie_title_header"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvMovieTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
                 android:maxLines="3"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTitleHeader"
-                tools:text="Check this out! Placeholder Text!"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                tools:text="Check this out! Placeholder Text!" />
 
 
             <!-- Release Date Section -->
@@ -89,31 +89,31 @@
                 android:id="@+id/tvMovieReleaseDateHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/movie_release_header"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle" />
 
             <TextView
                 android:id="@+id/tvMovieReleaseDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="7dp"
                 android:gravity="center"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieReleaseDateHeader"
-                tools:text="Check this out! Placeholder Text!"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                tools:text="Check this out! Placeholder Text!" />
 
 
             <!-- Rating Bar Section -->
@@ -121,32 +121,32 @@
                 android:id="@+id/tvRatingBarHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/movie_rating_header"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieReleaseDate"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieReleaseDate" />
 
             <RatingBar
                 android:id="@+id/rbRating"
                 style="@style/RatingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:numStars="5"
                 android:stepSize="0.01"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvRatingBarHeader"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvRatingBarHeader" />
 
 
             <!-- Favorite Movie Button Section -->
@@ -154,82 +154,169 @@
                 android:id="@+id/bFavoriteMovie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rbRating"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/rbRating" />
 
 
-            <!-- Divider for the movie plot -->
+            <!-- Divider for the movie synopsis -->
             <ImageView
                 android:id="@+id/ivSynopsisDivider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/iv_divider_color"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bFavoriteMovie"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/bFavoriteMovie" />
 
             <!-- Movie Synopsis -->
 
             <TextView
-                android:id="@+id/tvMoviePlot"
-                android:layout_width="0dp"
+                android:id="@+id/tvMovieSynopsisHeader"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/movie_synopsis_header"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivSynopsisDivider" />
+
+            <TextView
+                android:id="@+id/tvMovieSynopsis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
                 android:maxLines="300"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                tools:text="t!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!oldert!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!oldert!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/ivSynopsisDivider"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieSynopsisHeader"
+                tools:text="t!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!oldert!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!oldert!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older Text!older" />
 
+            <!-- Divider for Trailers -->
             <ImageView
                 android:id="@+id/ivTrailerDivider"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/iv_divider_color"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMoviePlot"
-                app:layout_constraintVertical_bias="0.0"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieSynopsis"
+                app:layout_constraintVertical_bias="0.0" />
 
             <!-- Movie Trailers -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvMovieTrailers"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tvMovieTrailersHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/movie_videos_header"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivTrailerDivider" />
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nsvMovieTrailers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieTrailersHeader">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvMovieVideos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="true"
+                    android:scrollbars="vertical" />
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <!-- Divider for Reviews -->
+
+            <ImageView
+                android:id="@+id/ivReviewDivider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/iv_divider_color"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nsvMovieTrailers" />
 
             <!-- Movie Reviews -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvMovieReviews"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                android:paddingBottom="8dp"/>
 
+            <TextView
+                android:id="@+id/tvMovieReviewsHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/movie_reviews_header"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ivReviewDivider" />
+
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nsvMovieReviews"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingBottom="24dp"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewsHeader">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvMovieReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="true"
+                    android:scrollbars="horizontal" />
+
+            </android.support.v4.widget.NestedScrollView>
 
 
         </android.support.constraint.ConstraintLayout>

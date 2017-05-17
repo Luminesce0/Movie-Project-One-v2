@@ -4,9 +4,13 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- Portions of the API url request -->
-    <string name="poster_size">w185</string>
-    <string name="poster_base_url">http://image.tmdb.org/t/p/</string>
+    <!-- Portions of the API url request and other URIs-->
+    <string name="poster_size" translate="false" >w185</string>
+    <string name="poster_base_url" translate="false" >http://image.tmdb.org/t/p/</string>
+    <string name="movie_video_uri_base" translate="false" >https://www.youtube.com/watch?v=</string>
+
+    <!-- Value for Invalid JSON Data in TMDbUtils -->
+    <string name="invalid_json_data">Invalid JSON Data</string>
 
     <!-- Text for an empty adapter of popularity and rating -->
     <string name="no_movies_found">No movies have been found \n or \n the network is not connected…</string>
@@ -14,8 +18,11 @@
     <!-- Text for an empty adapter of favorites -->
     <string name="no_movies_favorited">No movies have been favorited. \n Add some then come back!</string>
 
-    <!-- Key name for temperature unit preference -->
-    <string name="pref_sorting_key">sorting</string>
+    <!-- Key name for sorting preference -->
+    <string name="pref_sorting_key" translate="false" >sorting</string>
+
+    <!-- Key values -->
+    <string name="movie_key" translate="false" >movieItem</string>
 
     <!-- Sorting label for the sorting method preference -->
     <string name="pref_sorting_label">Sorting Method</string>
@@ -26,9 +33,9 @@
     <string name="pref_sorting_label_favorites">Favorites</string>
 
     <!-- Values in SharedPreferences for popularity, top rated and favorites sorting options -->
-    <string name="pref_sorting_popularity">movie/popular</string>
-    <string name="pref_sorting_rating">movie/top_rated</string>
-    <string name="pref_sorting_favorites">movie/</string>
+    <string name="pref_sorting_popularity" translate="false" >movie/popular</string>
+    <string name="pref_sorting_rating" translate="false" >movie/top_rated</string>
+    <string name="pref_sorting_favorites" translate="false" >movie/</string>
 
     <!-- Values for view Labels [Activity names, headers] -->
     <string name="movie_title_header">Movie Title</string>
@@ -36,9 +43,10 @@
     <string name="movie_release_header">Release Date</string>
     <string name="title_activity_settings">Settings Activity</string>
     <string name="title_activity_movie_details">Movie Details</string>
-
-    <!-- Key values -->
-    <string name="movie_key">movieItem</string>
+    <string name="movie_synopsis_header">Movie Synopsis</string>
+    <string name="movie_videos_header">Movie Videos</string>
+    <string name="movie_reviews_header">Movie Reviews</string>
+    <string name="review_author">A review by</string>
 
     <!-- Fragment Tags -->
     <string name="settings_fragment_tag">Settings Fragment</string>
@@ -47,5 +55,6 @@
     <string name="btn_refresh">Refresh</string>
     <string name="btn_favorite_true">Favorite</string>
     <string name="btn_favorite_false">Unfavorite</string>
+
 
 </resources>

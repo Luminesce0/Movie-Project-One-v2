@@ -40,9 +40,15 @@ public class TMDbUtils {
     private static final String LOG_TAG = TMDbUtils.class.getSimpleName();
     private static final String SCHEME = "http";
     private static final String AUTHORITY = "api.themoviedb.org";
+    private static final String API_MOVIE_PARAM = "movie";
+    private static final String API_MOVIE_VIDEO_PARAM = "videos";
+    private static final String API_MOVIE_REVIEW_PARAM = "reviews";
     private static final String API_VERSION_PARAM = "3";
     private static final String API_QUERY = "api_key";
+
+
     public static String currentSortingMethod;
+    public static MovieDetailInfo mMDI;
 
     /**
      * This class's static methods & variables are directly accessible from the class name.
@@ -87,9 +93,6 @@ public class TMDbUtils {
     }
 
     public static Cursor extractMovieJsonDataToDatabase(Context context, String sortingMethodPath) {
-        // Used within onFinishedLoader
-        currentSortingMethod = sortingMethodPath;
-
         // Create a URL Object
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME)
@@ -191,15 +194,206 @@ public class TMDbUtils {
     }
 
     /**
+     * Extract the movie's video data from json and utilize putVideoDataInMDI as a helper
+     * method
+     *
+     * @param context
+     * @param movieID
+     */
+    public static MovieDetailInfo extractMovieVideoJsonDataToMDI(
+            Context context, String movieID, MovieDetailInfo mdi) {
+        Log.d(LOG_TAG, "extractMovieVideoJsonDataToMDI called");
+
+        // Create a URL Object
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME)
+                .authority(AUTHORITY)
+                .appendPath(API_VERSION_PARAM)
+                .appendPath(API_MOVIE_PARAM)
+                .appendPath(movieID)
+                .appendPath(API_MOVIE_VIDEO_PARAM)
+                .appendQueryParameter(API_QUERY, BuildConfig.THE_MOVIE_DB_API_KEY);
+        URL url = createUrl(builder.build().toString());
+
+        // Perform HTTP request to the URL & recieve a JSON response back.
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHTTPRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP Request [Query Utils].", e);
+        }
+
+        // Extract relevant fields from the JSON Response & create a list of news items through parsing
+
+        return putVideoDataInMDI(jsonResponse, context, mdi);
+    }
+
+    /**
+     * Helper method to extract JSON data into MDI
+     *
+     * @param jsonResponse
+     * @param context
+     */
+    private static MovieDetailInfo putVideoDataInMDI(
+            String jsonResponse, Context context, MovieDetailInfo mdi) {
+
+        try {
+            mdi.instantiateVideoLists();
+
+            final String TMDB_RESULTS = "results";
+            final String TMDB_KEY = "key";
+            final String TMDB_NAME = "name";
+            final String TMDB_TYPE = "type";
+
+            String nullData = context.getString(R.string.invalid_json_data);
+
+            JSONObject movieJson = new JSONObject(jsonResponse);
+            JSONArray movieResultsArray = movieJson.getJSONArray(TMDB_RESULTS);
+
+            for (int i = 0; i < movieResultsArray.length(); i++) {
+
+                // JSON Objects that must be extracted.
+                JSONObject movieJsonObject = movieResultsArray.getJSONObject(i);
+
+                // JSON Object data turned to variables
+                String videoKey = movieJsonObject.getString(TMDB_KEY);
+                String videoName = movieJsonObject.getString(TMDB_NAME);
+                String videoType = movieJsonObject.getString(TMDB_TYPE);
+
+                //TODO: Try to instantiate the List<String> in a new Initiate method
+                // JSON Object variables added to the relevant position
+                if (videoKey != null) {
+                    Log.d(LOG_TAG, "VIDEO KEY: - " + videoKey);
+                    mdi.movieVideoKey.add(i, videoKey);
+                } else {
+                    Log.d(LOG_TAG, "VIDEO KEY NULL");
+                    mdi.movieVideoKey.add(i, nullData);
+                }
+
+                if (videoName != null) {
+                    Log.d(LOG_TAG, "VIDEO NAME: - " + videoName);
+                    mdi.movieVideoName.add(i, videoName);
+                } else {
+                    Log.d(LOG_TAG, "VIDEO NAME NULL");
+                    mdi.movieVideoName.add(i, nullData);
+                }
+
+                if (videoType != null) {
+                    Log.d(LOG_TAG, "VIDEO TYPE: - " + videoType);
+                    mdi.movieVideoType.add(i, videoType);
+                } else {
+                    Log.d(LOG_TAG, "VIDEO TYPE NULL");
+                    mdi.movieVideoType.add(i, nullData);
+                }
+
+                Log.d(LOG_TAG, "KEY FOR MOVIE" + mdi.movieVideoKey.get(i));
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return mdi;
+    }
+
+    /**
+     * Extract the movie's review data from json and utilize putVideoDataInMDI as a helper
+     * method
+     *
+     * @param context
+     * @param movieID
+     */
+    public static MovieDetailInfo extractMovieReviewJsonDataToMDI(
+            Context context, String movieID, MovieDetailInfo mdi) {
+        // Create a URL Object
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME)
+                .authority(AUTHORITY)
+                .appendPath(API_VERSION_PARAM)
+                .appendPath(API_MOVIE_PARAM)
+                .appendPath(movieID)
+                .appendPath(API_MOVIE_REVIEW_PARAM)
+                .appendQueryParameter(API_QUERY, BuildConfig.THE_MOVIE_DB_API_KEY);
+        URL url = createUrl(builder.build().toString());
+
+        // Perform HTTP request to the URL & recieve a JSON response back.
+        String jsonResponse = null;
+        try {
+            jsonResponse = makeHTTPRequest(url);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making the HTTP Request [Query Utils].", e);
+        }
+
+        // Extract relevant fields from the JSON Response & create a list of news items through parsing
+
+        return putReviewDataInMDI(jsonResponse, context, mdi);
+    }
+
+    /**
+     * Helper method to extract JSON data into MDI
+     *
+     * @param jsonResponse
+     * @param context
+     */
+    private static MovieDetailInfo putReviewDataInMDI(
+            String jsonResponse, Context context, MovieDetailInfo mdi) {
+        try {
+            mdi.instantiateReviewLists();
+
+            final String TMDB_RESULTS = "results";
+            final String TMDB_AUTHOR = "author";
+            final String TMDB_CONTENT = "content";
+            final String TMDB_URL = "url";
+
+            String nullData = context.getString(R.string.invalid_json_data);
+
+            JSONObject movieJson = new JSONObject(jsonResponse);
+            JSONArray movieResultsArray = movieJson.getJSONArray(TMDB_RESULTS);
+
+            for (int i = 0; i < movieResultsArray.length(); i++) {
+
+                // JSON Objects that must be extracted.
+                JSONObject movieJsonObject = movieResultsArray.getJSONObject(i);
+
+                // JSON Object data turned to variables
+                String reviewAuthor = movieJsonObject.getString(TMDB_AUTHOR);
+                String reviewContent = movieJsonObject.getString(TMDB_CONTENT);
+                String reviewUrl = movieJsonObject.getString(TMDB_URL);
+
+                // JSON Object variables added to the relevant position
+                if (reviewAuthor != null) {
+                    mdi.movieReviewAuthor.add(i, reviewAuthor);
+                } else {
+                    mdi.movieReviewAuthor.add(i, nullData);
+                }
+                if (reviewContent != null) {
+                    mdi.movieReviewContent.add(i, reviewContent);
+                } else {
+                    mdi.movieReviewContent.add(i, nullData);
+                }
+                if (reviewUrl != null) {
+                    mdi.movieReviewUrl.add(i, reviewUrl);
+                } else {
+                    mdi.movieReviewUrl.add(i, nullData);
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return mdi;
+    }
+
+
+    /**
      * Ties movie details from the cursor to the MovieDetailInfo object in conjunction with the
      * data binding util
      *
      * @param movieCursor
      * @return
      */
-    public static MovieDetailInfo generateMovieDetailInfo(Cursor movieCursor) {
-        MovieDetailInfo mdi = new MovieDetailInfo();
-
+    public static MovieDetailInfo generateMovieDetailInfo(Cursor movieCursor, MovieDetailInfo mdi) {
         // Gathering all movie data
         mdi.movieTitle = movieCursor.
                 getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_TITLE));

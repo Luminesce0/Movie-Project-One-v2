@@ -1,4 +1,4 @@
-package com.omegaspocktari.movieprojectone;
+package com.omegaspocktari.movieprojectone.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.omegaspocktari.movieprojectone.R;
 import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
@@ -128,7 +129,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
          */
         @Override
         public void onClick(View v) {
-            Log.d(LOG_TAG, "\n\nThis is the onClick run within the MovieViewHolder\n\n");
+            Log.d(LOG_TAG, "\n\nThis is the onReviewClick run within the MovieViewHolder\n\n");
             int adapterPosition = getAdapterPosition();
 
             mClickHandler.onListItemClick(adapterPosition);
