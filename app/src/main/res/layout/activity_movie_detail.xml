@@ -185,7 +185,7 @@
 
             <TextView
                 android:id="@+id/tvMovieSynopsisHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginStart="8dp"
@@ -231,9 +231,8 @@
 
             <TextView
                 android:id="@+id/tvMovieTrailersHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
@@ -242,25 +241,21 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivTrailerDivider" />
 
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/nsvMovieTrailers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieTrailersHeader">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvMovieVideos"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:clipToPadding="true"
-                    android:scrollbars="vertical" />
+                    android:scrollbars="vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvMovieTrailersHeader"
+                    android:layout_marginRight="8dp"
+                    app:layout_constraintRight_toRightOf="parent" />
 
-            </android.support.v4.widget.NestedScrollView>
 
             <!-- Divider for Reviews -->
 
@@ -277,15 +272,14 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nsvMovieTrailers" />
+                app:layout_constraintTop_toBottomOf="@+id/rvMovieVideos" />
 
             <!-- Movie Reviews -->
 
             <TextView
                 android:id="@+id/tvMovieReviewsHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:layout_marginLeft="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
@@ -294,29 +288,21 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivReviewDivider" />
 
-            <android.support.v4.widget.NestedScrollView
-                android:id="@+id/nsvMovieReviews"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvMovieReviews"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:clipToPadding="true"
                 android:paddingBottom="24dp"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:scrollbars="horizontal"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewsHeader"
+                android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewsHeader">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvMovieReviews"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="true"
-                    android:scrollbars="horizontal" />
-
-            </android.support.v4.widget.NestedScrollView>
+                android:layout_marginLeft="8dp" />
 
 
         </android.support.constraint.ConstraintLayout>

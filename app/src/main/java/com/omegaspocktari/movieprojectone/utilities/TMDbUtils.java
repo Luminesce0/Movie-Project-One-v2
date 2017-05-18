@@ -202,7 +202,6 @@ public class TMDbUtils {
      */
     public static MovieDetailInfo extractMovieVideoJsonDataToMDI(
             Context context, String movieID, MovieDetailInfo mdi) {
-        Log.d(LOG_TAG, "extractMovieVideoJsonDataToMDI called");
 
         // Create a URL Object
         Uri.Builder builder = new Uri.Builder();
@@ -263,30 +262,23 @@ public class TMDbUtils {
                 //TODO: Try to instantiate the List<String> in a new Initiate method
                 // JSON Object variables added to the relevant position
                 if (videoKey != null) {
-                    Log.d(LOG_TAG, "VIDEO KEY: - " + videoKey);
                     mdi.movieVideoKey.add(i, videoKey);
                 } else {
-                    Log.d(LOG_TAG, "VIDEO KEY NULL");
                     mdi.movieVideoKey.add(i, nullData);
                 }
 
                 if (videoName != null) {
-                    Log.d(LOG_TAG, "VIDEO NAME: - " + videoName);
                     mdi.movieVideoName.add(i, videoName);
                 } else {
-                    Log.d(LOG_TAG, "VIDEO NAME NULL");
                     mdi.movieVideoName.add(i, nullData);
                 }
 
                 if (videoType != null) {
-                    Log.d(LOG_TAG, "VIDEO TYPE: - " + videoType);
                     mdi.movieVideoType.add(i, videoType);
                 } else {
-                    Log.d(LOG_TAG, "VIDEO TYPE NULL");
                     mdi.movieVideoType.add(i, nullData);
                 }
 
-                Log.d(LOG_TAG, "KEY FOR MOVIE" + mdi.movieVideoKey.get(i));
 
             }
         } catch (JSONException e) {
@@ -448,10 +440,7 @@ public class TMDbUtils {
     public static void loadImageFromSystem(String imagePath, ImageView iv) {
         FileInputStream fis = null;
         try {
-//            File moviePoster = new File(imagePath);
             fis = new FileInputStream(new File(imagePath));
-//            Log.d(LOG_TAG, "File Directory inside loadImageFromSystem " + moviePoster);
-//            Bitmap moviePosterImage = BitmapFactory.decodeStream(new FileInputStream(moviePoster));
             Bitmap moviePosterImage = BitmapFactory.decodeStream(fis);
             iv.setImageBitmap(moviePosterImage);
         } catch (FileNotFoundException e) {

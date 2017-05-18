@@ -13,6 +13,7 @@
         android:maxLines="2"
         android:paddingRight="24dp"
         android:text="@string/review_author"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,5 +26,5 @@
         android:maxLines="100"
         android:paddingRight="36dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewAuthor"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewAuthor" />
 </android.support.constraint.ConstraintLayout>

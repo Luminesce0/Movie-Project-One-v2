@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,15 +32,12 @@ public class MovieVideosAdapter extends
     private MovieDetailInfo mMDI;
 
     public MovieVideosAdapter(@NonNull Context context, MovieTrailerAdapterOnClickHandler clickHandler) {
-        Log.d(LOG_TAG, "MovieVideosAdapter Constructor");
-        Log.d(LOG_TAG, "Look at me!");
         mContext = context;
         mClickHandler = clickHandler;
     }
 
     @Override
     public MovieVideosAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(LOG_TAG, "onCreateViewHolder");
         // Inflate the view for the Movie Video item
         View view = LayoutInflater.from(mContext).inflate(R.layout.movie_video_item, parent, false);
 
@@ -54,7 +50,6 @@ public class MovieVideosAdapter extends
 
     @Override
     public void onBindViewHolder(MovieVideosAdapterViewHolder holder, int position) {
-        Log.d(LOG_TAG, "onBindViewHolder");
         // Acquire movie video data
         String videoType = mMDI.movieVideoType.get(position);
         String videoName = mMDI.movieVideoName.get(position);
@@ -65,7 +60,6 @@ public class MovieVideosAdapter extends
 
     @Override
     public int getItemCount() {
-        Log.d(LOG_TAG, "getItemCount");
         if (mMDI != null && mMDI.movieVideoKey != null){
             return mMDI.movieVideoKey.size();
         } else {
@@ -80,7 +74,6 @@ public class MovieVideosAdapter extends
      * @param mdi
      */
     public void swapVideoAdapterMDI(MovieDetailInfo mdi) {
-        Log.d(LOG_TAG, "SWAP MOVIE DETAILS");
         mMDI = mdi;
         notifyDataSetChanged();
     }
@@ -102,7 +95,6 @@ public class MovieVideosAdapter extends
         public MovieVideosAdapterViewHolder(View itemView) {
             super(itemView);
 
-            Log.d(LOG_TAG, "MovieVideosAdapterViewHolder Constructor");
             videoGraphicView = (ImageView) itemView.findViewById(R.id.ivMovieVideoGraphic);
             videoTypeView = (TextView) itemView.findViewById(R.id.tvMovieVideoType);
             videoNameView = (TextView) itemView.findViewById(R.id.tvMovieVideoName);
@@ -113,7 +105,6 @@ public class MovieVideosAdapter extends
         // This is called by the clicked view.
         @Override
         public void onClick(View v) {
-            Log.d(LOG_TAG, "MVAVH onReviewClick");
             String key = mMDI.movieVideoKey.get(getAdapterPosition());
             mClickHandler.onVideoClick(key);
         }

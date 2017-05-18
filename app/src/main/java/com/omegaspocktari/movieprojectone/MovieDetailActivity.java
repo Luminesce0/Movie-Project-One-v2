@@ -34,9 +34,10 @@ import com.omegaspocktari.movieprojectone.databinding.ActivityMovieDetailBinding
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcels;
+
 import java.io.File;
 
-import static android.R.attr.id;
 import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.currentSortingMethod;
 import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovieReviewJsonDataToMDI;
 import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovieVideoJsonDataToMDI;
@@ -49,25 +50,23 @@ import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovi
 public class MovieDetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieVideosAdapter.MovieTrailerAdapterOnClickHandler,
-        MovieReviewsAdapter.MovieReviewsAdapterOnClickHandler{
+        MovieReviewsAdapter.MovieReviewsAdapterOnClickHandler {
 
+    // Key
+    public final static String BUNDLE_KEY = "mdi_key";
     // LOG_TAG implementation
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
-
     // Loader id
     private static final int ID_MOVIE_LOADER = 0;
-
     // String value of file path
     private static String mFavoriteMovieLocation;
-
-    // Uri to access relevant data
-    private int mPosition;
-
-    // Movie Data
-    private MovieDetailInfo mMDI;
-
     // Views
     ActivityMovieDetailBinding mBinding;
+
+    // Movie Data
+    // Uri to access relevant data
+    private int mPosition;
+    private MovieDetailInfo mMDI;
     private Button mFavoriteMovieButton;
     private RecyclerView mRecyclerViewVideos;
     private RecyclerView mRecyclerViewReviews;
@@ -80,6 +79,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        Log.d(LOG_TAG, "onCreate()");
 
         // Enable picasso logging
         Picasso.with(this).setLoggingEnabled(true);
@@ -88,7 +88,10 @@ public class MovieDetailActivity extends AppCompatActivity implements
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
 
         // Initialize mMDI
-        mMDI = new MovieDetailInfo();
+        if (mMDI == null) {
+            mMDI = new MovieDetailInfo();
+            mMDI.mdiCreated = true;
+        }
 
         // Grab views
         mFavoriteMovieButton = (Button) findViewById(R.id.bFavoriteMovie);
@@ -119,8 +122,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
         String position = mUri.getLastPathSegment();
         mPosition = Integer.valueOf(position);
 
-        Log.d(LOG_TAG, "URI: " + mUri);
-        Log.d(LOG_TAG, "Position: " + mPosition);
         // Connect activity to loader
         getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
     }
@@ -129,6 +130,29 @@ public class MovieDetailActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_settings, menu);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop()");
+        getIntent().putExtra(BUNDLE_KEY, Parcels.wrap(mMDI));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle bundle = getIntent().getExtras();
+        Log.d(LOG_TAG, "onResume()");
+        if (bundle != null) {
+            Log.d(LOG_TAG, "bundle isn't null?");
+            MovieDetailInfo mdi = Parcels.unwrap(bundle.getParcelable(BUNDLE_KEY));
+            if (mdi != null) {
+                Log.d(LOG_TAG, "Got our thing back");
+                mMDI = mdi;
+                displayMovieDetails();
+            }
+        }
     }
 
     @Override
@@ -180,9 +204,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
                 }
                 String movieID = cursor.getString(cursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
 
-                mMDI = extractMovieVideoJsonDataToMDI(getContext(), movieID, mMDI);
-                mMDI = extractMovieReviewJsonDataToMDI(getContext(), movieID, mMDI);
-
+                if (!mMDI.mdiListDataStored) {
+                    mMDI = extractMovieVideoJsonDataToMDI(getContext(), movieID, mMDI);
+                    mMDI = extractMovieReviewJsonDataToMDI(getContext(), movieID, mMDI);
+                    mMDI.mdiListDataStored = true;
+                }
                 return cursor;
             }
         };
@@ -205,7 +231,9 @@ public class MovieDetailActivity extends AppCompatActivity implements
         // Generate MovieDetailPage
         Log.d(LOG_TAG, "Generating Detail Page");
 
-        mMDI = TMDbUtils.generateMovieDetailInfo(data, mMDI);
+        if (!mMDI.mdiDataStored) {
+            mMDI = TMDbUtils.generateMovieDetailInfo(data, mMDI);
+        }
         displayMovieDetails();
 
         // initialize button
@@ -225,7 +253,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         String videoUri = this.getString(R.string.movie_video_uri_base) + key;
 
         // Create intents, one for youtube and a fallback for a web browser
-        Intent videoIntentApp = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+        Intent videoIntentApp = new Intent(Intent.ACTION_VIEW, Uri.parse(key));
         Intent videoIntentWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUri));
 
         try {
@@ -315,6 +343,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     /**
      * onClickListener to remove favorite movie
+     *
      * @param movie
      */
     private void removeFavoriteMovie(Cursor movie) {
@@ -384,6 +413,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     /**
      * onClickListener to add favorite movie
+     *
      * @param movie
      */
     public void addNewFavoriteMovie(Cursor movie) {
@@ -467,7 +497,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
         mBinding.tvMovieSynopsis.setText(mMDI.moviePlot);
         mBinding.tvMovieReleaseDate.setText(mMDI.movieReleaseDate);
         mBinding.tvMovieTitle.setText(mMDI.movieTitle);
-        mBinding.rbRating.setRating(mMDI.movieUserRating/2);
+        mBinding.rbRating.setRating(mMDI.movieUserRating / 2);
 
         mMovieVideoAdapter.swapVideoAdapterMDI(mMDI);
         mMovieReviewsAdapter.swapReviewAdapterMDI(mMDI);
