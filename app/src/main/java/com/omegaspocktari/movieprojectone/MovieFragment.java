@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -22,6 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.omegaspocktari.movieprojectone.adapters.MovieAdapter;
 import com.omegaspocktari.movieprojectone.data.MovieContract;
 import com.omegaspocktari.movieprojectone.data.MoviePreferences;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
@@ -57,9 +57,6 @@ public class MovieFragment extends Fragment implements
     // Adapter and relevant objects
     private MovieAdapter mAdapter;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-
-    // Cursor and Database
-    private SQLiteDatabase mDb;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,8 +148,8 @@ public class MovieFragment extends Fragment implements
         // however, should the sorting preference be favorites, bypass network
         // for offline capabilities.
         if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
-        || (networkInfo != null && networkInfo.isConnected())) {
-
+                || (networkInfo != null && networkInfo.isConnected())) {
+            Log.d(LOG_TAG, "Inside if statement");
             // Gather preference with the default being popularity.
 
             Bundle movieUpdateBundle = new Bundle();
@@ -161,17 +158,18 @@ public class MovieFragment extends Fragment implements
             LoaderManager loaderManager = getActivity().getSupportLoaderManager();
             Loader<String> movieLoader = loaderManager.getLoader(MOVIE_RESULTS_LOADER);
             if (movieLoader == null) {
+                Log.d(LOG_TAG, "movieLoader == null" );
                 loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             } else {
+                Log.d(LOG_TAG, "movieLoader != null" );
                 loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
-                // Do nothing.
             }
         }
     }
 
     @Override
     public void onListItemClick(int id) {
-        Log.d(LOG_TAG, "\n\nThis is the onClick run within the instantiation of" +
+        Log.d(LOG_TAG, "\n\nThis is the onReviewClick run within the instantiation of" +
                 "mAdapter/creating a new MovieAdapter\n\n");
 
         Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
@@ -226,13 +224,12 @@ public class MovieFragment extends Fragment implements
                         jsonUrlPreferences.equals((getString(R.string.pref_sorting_rating)))) {
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);
                     Log.d(LOG_TAG, "Returning POPULARITY or RATING results");
-                    return TMDbUtils.getMovieDataFromJson(getContext(), jsonUrlPreferences);
-
+                    return TMDbUtils.extractMovieJsonDataToDatabase(getContext(), jsonUrlPreferences);
                 } else {
                     // Derive data set by favoriting movies
                     Log.d(LOG_TAG, "" + jsonUrlPreferences);
                     Log.d(LOG_TAG, "Returning FAVORITES");
-                    return TMDbUtils.getFavoriteMovieData(getContext());
+                    return TMDbUtils.getMovieData(getContext());
                 }
 
             }

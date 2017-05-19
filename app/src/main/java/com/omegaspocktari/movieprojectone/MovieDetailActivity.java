@@ -1,8 +1,10 @@
 package com.omegaspocktari.movieprojectone;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -14,25 +16,31 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.omegaspocktari.movieprojectone.adapters.MovieReviewsAdapter;
+import com.omegaspocktari.movieprojectone.adapters.MovieVideosAdapter;
 import com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
 import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
+import com.omegaspocktari.movieprojectone.databinding.ActivityMovieDetailBinding;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 
 import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.currentSortingMethod;
+import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovieReviewJsonDataToMDI;
+import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovieVideoJsonDataToMDI;
 
 /**
  * Created by ${Michael} on 11/11/2016.
@@ -40,41 +48,73 @@ import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.currentSort
 
 // TODO: https://classroom.udacity.com/nanodegrees/nd801/parts/cd689fc8-4765-4588-8e6b-eeb997b5647a/modules/f00afa8d-bde2-43d7-9c7e-4d7d52e28a27/lessons/950e6939-1786-4659-89de-5af2dec70716/concepts/0936369f-d687-479a-9de9-0a31ec5d61cd
 public class MovieDetailActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        MovieVideosAdapter.MovieTrailerAdapterOnClickHandler,
+        MovieReviewsAdapter.MovieReviewsAdapterOnClickHandler {
 
+    // Key
+    public final static String BUNDLE_KEY = "mdi_key";
+    // LOG_TAG implementation
     private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     // Loader id
     private static final int ID_MOVIE_LOADER = 0;
-
     // String value of file path
     private static String mFavoriteMovieLocation;
+    // Views
+    ActivityMovieDetailBinding mBinding;
+
+    // Movie Data
     // Uri to access relevant data
     private int mPosition;
-    private Cursor movie;
-
-    // Views
-    private TextView mTitle;
-    private TextView mRelease;
-    private TextView mPlot;
-    private RatingBar mRating;
+    private MovieDetailInfo mMDI;
     private Button mFavoriteMovieButton;
-    private ImageView mPoster;
+    private RecyclerView mRecyclerViewVideos;
+    private RecyclerView mRecyclerViewReviews;
+
+    // Recycler View Adapters
+    private MovieVideosAdapter mMovieVideoAdapter;
+    private MovieReviewsAdapter mMovieReviewsAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+        Log.d(LOG_TAG, "onCreate()");
 
         // Enable picasso logging
         Picasso.with(this).setLoggingEnabled(true);
 
-        // Get Views.
-        mPoster = (ImageView) findViewById(R.id.iv_movie_poster);
-        mTitle = (TextView) findViewById(R.id.movie_title);
-        mRelease = (TextView) findViewById(R.id.movie_release);
-        mRating = (RatingBar) findViewById(R.id.movie_rating);
-        mPlot = (TextView) findViewById(R.id.movie_plot);
-        mFavoriteMovieButton = (Button) findViewById(R.id.b_favorite_movie);
+        // Replaces set content view
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
+
+        // Initialize mMDI
+        if (mMDI == null) {
+            mMDI = new MovieDetailInfo();
+            mMDI.mdiCreated = true;
+        }
+
+        // Grab views
+        mFavoriteMovieButton = (Button) findViewById(R.id.bFavoriteMovie);
+        mRecyclerViewVideos = (RecyclerView) findViewById(R.id.rvMovieVideos);
+        mRecyclerViewReviews = (RecyclerView) findViewById(R.id.rvMovieReviews);
+
+        // Layout Managers to appropriately measure and position views within the recycler views
+        LinearLayoutManager layoutManagerVideos =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManagerReviews =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+
+        // Associate the layout managers with the relevant recycler views
+        mRecyclerViewVideos.setLayoutManager(layoutManagerVideos);
+        mRecyclerViewReviews.setLayoutManager(layoutManagerReviews);
+
+        // Adapters
+        mMovieVideoAdapter = new MovieVideosAdapter(this, this);
+        mMovieReviewsAdapter = new MovieReviewsAdapter(this, this);
+
+        // Plug adapters into relevant recycler views
+        mRecyclerViewVideos.setAdapter(mMovieVideoAdapter);
+        mRecyclerViewReviews.setAdapter(mMovieReviewsAdapter);
 
         // Acquire the correct row to load
         Bundle bundle = getIntent().getExtras();
@@ -82,54 +122,37 @@ public class MovieDetailActivity extends AppCompatActivity implements
         String position = mUri.getLastPathSegment();
         mPosition = Integer.valueOf(position);
 
-        Log.d(LOG_TAG, "URI: " + mUri);
-        Log.d(LOG_TAG, "Position: " + mPosition);
         // Connect activity to loader
         getSupportLoaderManager().initLoader(ID_MOVIE_LOADER, null, this);
-    }
-
-    // Gather all movie relevant data and set the data to relevant views
-    private void GenerateMovieDetailPage(Cursor movieCursor) {
-
-        // Gathering all movie data
-        String movieTitle = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_TITLE));
-        String moviePlot = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_SYNOPSIS));
-        Float movieUserRating = movieCursor.
-                getFloat(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_USER_RATING));
-        String movieReleaseDate = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_RELEASE_DATE));
-        String moviePoster = movieCursor.
-                getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
-
-        Log.d(LOG_TAG, "Movie Path: " + moviePoster);
-
-        if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
-            Log.d(LOG_TAG, "Inside the favorite utils");
-            String movieId = movieCursor.
-                    getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
-            TMDbUtils.loadImageFromSystem(moviePoster, mPoster);
-        } else {
-            Log.d(LOG_TAG, "Inside the Popularity/Rating utils");
-            // Setting movie data
-            Picasso.with(getApplicationContext())
-                    .load(moviePoster)
-                    .into(mPoster);
-        }
-
-
-        // Set View Data
-        mTitle.setText(movieTitle);
-        mRelease.setText(movieReleaseDate);
-        mRating.setRating((movieUserRating / 2));
-        mPlot.setText(moviePlot);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.movie_settings, menu);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop()");
+        getIntent().putExtra(BUNDLE_KEY, Parcels.wrap(mMDI));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Bundle bundle = getIntent().getExtras();
+        Log.d(LOG_TAG, "onResume()");
+        if (bundle != null) {
+            Log.d(LOG_TAG, "bundle isn't null?");
+            MovieDetailInfo mdi = Parcels.unwrap(bundle.getParcelable(BUNDLE_KEY));
+            if (mdi != null) {
+                Log.d(LOG_TAG, "Got our thing back");
+                mMDI = mdi;
+                displayMovieDetails();
+            }
+        }
     }
 
     @Override
@@ -144,7 +167,118 @@ public class MovieDetailActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    // Initialize movie button with helper methods
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new AsyncTaskLoader<Cursor>(this) {
+
+            public void onStartLoading() {
+                forceLoad();
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public Cursor loadInBackground() {
+                Cursor cursor;
+                if (currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
+                    cursor = getContext().getContentResolver().query(FavoriteMovies.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
+                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
+
+                    cursor.moveToPosition(mPosition);
+
+
+                } else {
+                    cursor = getContext().getContentResolver().query(RegularMovies.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
+                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
+                    cursor.moveToPosition(mPosition);
+                }
+                String movieID = cursor.getString(cursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
+
+                if (!mMDI.mdiListDataStored) {
+                    mMDI = extractMovieVideoJsonDataToMDI(getContext(), movieID, mMDI);
+                    mMDI = extractMovieReviewJsonDataToMDI(getContext(), movieID, mMDI);
+                    mMDI.mdiListDataStored = true;
+                }
+                return cursor;
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        // Check integrity of the information
+        Log.d(LOG_TAG, "ON LOAD FINISHED");
+        boolean cursorHasValidData = false;
+        if (data != null) {
+            cursorHasValidData = true;
+        }
+
+        if (!cursorHasValidData) {
+            Log.d(LOG_TAG, "Cursor doesn't have valid data: " + mPosition);
+            return;
+        }
+        // Generate MovieDetailPage
+        Log.d(LOG_TAG, "Generating Detail Page");
+
+        if (!mMDI.mdiDataStored) {
+            mMDI = TMDbUtils.generateMovieDetailInfo(data, mMDI);
+        }
+        displayMovieDetails();
+
+        // initialize button
+        initializeMovieFavoriteButton(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    @Override
+    public void onVideoClick(String key) {
+        Log.d(LOG_TAG, "MDA onReviewClick");
+
+        // Generate the youtube browser URI
+        String videoUri = this.getString(R.string.movie_video_uri_base) + key;
+
+        // Create intents, one for youtube and a fallback for a web browser
+        Intent videoIntentApp = new Intent(Intent.ACTION_VIEW, Uri.parse(key));
+        Intent videoIntentWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(videoUri));
+
+        try {
+            // Start in youtube app if available
+            startActivity(videoIntentApp);
+        } catch (ActivityNotFoundException ex) {
+            // Start in web browser if youtube is not available
+            startActivity(videoIntentWeb);
+        }
+    }
+
+    @Override
+    public void onReviewClick(String reviewUri) {
+        // Create intent for the review to open up in the browser
+        Intent reviewIntentWeb = new Intent(Intent.ACTION_VIEW, Uri.parse(reviewUri));
+
+        // start intent
+        startActivity(reviewIntentWeb);
+    }
+
+    /**
+     * Initialize movie button with helper methods
+     *
+     * @param movie
+     */
     private void initializeMovieFavoriteButton(Cursor movie) {
         int movieId = movie.
                 getInt(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
@@ -169,7 +303,12 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
     }
 
-    // Sets up the status of the movie button depending on whether or not it has been favorited
+    /**
+     * Sets up the status of the movie button depending on whether or not it has been favorited
+     *
+     * @param favoriteStatus
+     * @param movie
+     */
     private void setMovieFavoriteButtonStatus(boolean favoriteStatus, final Cursor movie) {
         if (favoriteStatus == true) {
             mFavoriteMovieButton.setText(getResources().getString(R.string.btn_favorite_false));
@@ -202,7 +341,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
     }
 
-    // onClickListener to remove favorite movie
+    /**
+     * onClickListener to remove favorite movie
+     *
+     * @param movie
+     */
     private void removeFavoriteMovie(Cursor movie) {
 
         // Gather information of movie
@@ -268,7 +411,11 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
     }
 
-    // onClickListener to add favorite movie
+    /**
+     * onClickListener to add favorite movie
+     *
+     * @param movie
+     */
     public void addNewFavoriteMovie(Cursor movie) {
         // Gather all relevant information
         Log.d(LOG_TAG, "addFavoriteMovie");
@@ -299,7 +446,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
             // Get movie id
             String movieId = movie.
                     getString(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
-            Bitmap bitmap = ((BitmapDrawable) mPoster.getDrawable()).getBitmap();
+            Bitmap bitmap = ((BitmapDrawable) mBinding.ivMoviePoster.getDrawable()).getBitmap();
 
             mFavoriteMovieLocation = TMDbUtils.saveToInternalStorage(bitmap, movieId, this);
 
@@ -333,122 +480,26 @@ public class MovieDetailActivity extends AppCompatActivity implements
         }
     }
 
-    // Citing: http://www.codexpedia.com/android/android-download-and-save-image-through-picasso/
-    // Helper method to addNewFavoriteMovie to download movie pictures for offline access
-//    private Target saveImageToSystem(Context context, final String imageName) {
-//
-//        Log.d(LOG_TAG, "Image Location: " + mFavoriteMovieLocation);
-//
-//
-//        return new Target() {
-//
-//            @Override
-//            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-//                new Thread(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        // Creates image file with directory and name
-//                        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-//                        final File myImageFile = new File(cw.getFilesDir(), imageName);
-//                        mFavoriteMovieLocation = myImageFile.getAbsolutePath();
-//
-//                        Log.d(LOG_TAG, "void Run inside bitmap");
-//
-//                        FileOutputStream fos = null;
-//                        try {
-//                            Log.d(LOG_TAG, "try");
-//                            fos = new FileOutputStream(myImageFile);
-//                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-//                        } catch (IOException e) {
-//                            Log.d(LOG_TAG, "Catch");
-//                            e.printStackTrace();
-//                        } finally {
-//                            Log.d(LOG_TAG, "Finally");
-//                            try {
-//                                fos.close();
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                }).start();
-//            }
-//
-//            @Override
-//            public void onBitmapFailed(Drawable errorDrawable) {
-//                Log.d(LOG_TAG, "onBitmapFailed");
-//            }
-//
-//            @Override
-//            public void onPrepareLoad(Drawable placeHolderDrawable) {
-//                if (placeHolderDrawable != null) {
-//                }
-//            }
-//        };
-//    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        return new AsyncTaskLoader<Cursor>(this) {
-
-            public void onStartLoading() {
-                forceLoad();
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public Cursor loadInBackground() {
-                if (currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
-                    Cursor cursor = getContext().getContentResolver().query(FavoriteMovies.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
-                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
-                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
-                    cursor.moveToPosition(mPosition);
-                    return cursor;
-                } else {
-                    Cursor cursor = getContext().getContentResolver().query(RegularMovies.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            null);
-                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
-                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
-                    cursor.moveToPosition(mPosition);
-                    return cursor;
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        // Check integrity of the information
-        Log.d(LOG_TAG, "ON LOAD FINISHED");
-        boolean cursorHasValidData = false;
-        if (data != null) {
-            cursorHasValidData = true;
+    /**
+     * Display the movie details from the data held in MDI
+     */
+    private void displayMovieDetails() {
+        // Display picture with the correct means
+        if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
+            TMDbUtils.loadImageFromSystem(mMDI.moviePoster, mBinding.ivMoviePoster);
+        } else {
+            Picasso.with(this)
+                    .load(mMDI.moviePoster)
+                    .into(mBinding.ivMoviePoster);
         }
 
-        if (!cursorHasValidData) {
-            Log.d(LOG_TAG, "Cursor doesn't have valid data: " + mPosition);
-            return;
-        }
-        // Generate MovieDetailPage
-        Log.d(LOG_TAG, "Generating Detail Page");
-        GenerateMovieDetailPage(data);
-        // Setup button
-        // initialize button
-        initializeMovieFavoriteButton(data);
-    }
+        // display the rest of the content
+        mBinding.tvMovieSynopsis.setText(mMDI.moviePlot);
+        mBinding.tvMovieReleaseDate.setText(mMDI.movieReleaseDate);
+        mBinding.tvMovieTitle.setText(mMDI.movieTitle);
+        mBinding.rbRating.setRating(mMDI.movieUserRating / 2);
 
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
+        mMovieVideoAdapter.swapVideoAdapterMDI(mMDI);
+        mMovieReviewsAdapter.swapReviewAdapterMDI(mMDI);
     }
 }
