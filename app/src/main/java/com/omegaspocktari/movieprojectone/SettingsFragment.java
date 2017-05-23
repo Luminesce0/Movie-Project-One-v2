@@ -9,6 +9,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 
 /**
+ * Fragment for settings
+ *
  * Created by ${Michael} on 4/13/2017.
  */
 

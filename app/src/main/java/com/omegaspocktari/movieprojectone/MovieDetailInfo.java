@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * MovieDetailInfo works as a storage place for values of individual movies
+ *
  * Created by ${Michael} on 5/13/2017.
  */
 @Parcel

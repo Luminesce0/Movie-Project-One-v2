@@ -13,7 +13,6 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +26,11 @@ import com.omegaspocktari.movieprojectone.data.MoviePreferences;
 import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 
 /**
+ * Fragment that displays card views inside a recycler view
+ *
  * Created by ${Michael} on 11/9/2016.
  */
 
-//TODO: understand more about savedinstancestates (Bundle passing)
-// TODO: Possibly get rid of refresh button.
 public class MovieFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieAdapter.MovieAdapterOnClickHandler {
@@ -133,15 +132,11 @@ public class MovieFragment extends Fragment implements
     public void onStart() {
         super.onStart();
 
-        Log.d(LOG_TAG, "onStart called");
         // Every time onStart is called update the movie list.
         updateMovies();
     }
 
-    // TODO: Update this with other stuff.
     private void updateMovies() {
-        Log.d(LOG_TAG, "updateMovies()");
-
         String sortingPreference = MoviePreferences.getPreferredMovieSorting(getContext());
 
         // Should a network connection be present, attempt to fetch data
@@ -149,7 +144,6 @@ public class MovieFragment extends Fragment implements
         // for offline capabilities.
         if ((sortingPreference.equals(getString(R.string.pref_sorting_favorites)))
                 || (networkInfo != null && networkInfo.isConnected())) {
-            Log.d(LOG_TAG, "Inside if statement");
             // Gather preference with the default being popularity.
 
             Bundle movieUpdateBundle = new Bundle();
@@ -158,10 +152,8 @@ public class MovieFragment extends Fragment implements
             LoaderManager loaderManager = getActivity().getSupportLoaderManager();
             Loader<String> movieLoader = loaderManager.getLoader(MOVIE_RESULTS_LOADER);
             if (movieLoader == null) {
-                Log.d(LOG_TAG, "movieLoader == null" );
                 loaderManager.initLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             } else {
-                Log.d(LOG_TAG, "movieLoader != null" );
                 loaderManager.restartLoader(MOVIE_RESULTS_LOADER, movieUpdateBundle, this).forceLoad();
             }
         }
@@ -169,9 +161,6 @@ public class MovieFragment extends Fragment implements
 
     @Override
     public void onListItemClick(int id) {
-        Log.d(LOG_TAG, "\n\nThis is the onReviewClick run within the instantiation of" +
-                "mAdapter/creating a new MovieAdapter\n\n");
-
         Intent movieDetail = new Intent(getContext(), MovieDetailActivity.class);
 
         if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
@@ -200,13 +189,11 @@ public class MovieFragment extends Fragment implements
      */
     @Override
     public Loader<Cursor> onCreateLoader(int id, final Bundle args) {
-        Log.d(LOG_TAG, "onCreateLoader()");
         // Generate an AsyncTask that will obtain the movie information within loader.
 
         return new AsyncTaskLoader<Cursor>(getContext()) {
 
             public void onStartLoading() {
-                Log.d(LOG_TAG, "onStartLoading()");
 
                 mProgressBar.setVisibility(View.VISIBLE);
             }
@@ -214,7 +201,6 @@ public class MovieFragment extends Fragment implements
             @Override
             public Cursor loadInBackground() {
 
-                Log.d(LOG_TAG, "loadInBackground()");
                 // Acquire the preference for the listed movies
                 String jsonUrlPreferences = args.getString(MOVIE_PREFERENCES);
 
@@ -222,13 +208,9 @@ public class MovieFragment extends Fragment implements
                 // derived from user preference inputs/defaults and JSON queries.
                 if (jsonUrlPreferences.equals(getString(R.string.pref_sorting_popularity)) ||
                         jsonUrlPreferences.equals((getString(R.string.pref_sorting_rating)))) {
-                    Log.d(LOG_TAG, "" + jsonUrlPreferences);
-                    Log.d(LOG_TAG, "Returning POPULARITY or RATING results");
                     return TMDbUtils.extractMovieJsonDataToDatabase(getContext(), jsonUrlPreferences);
                 } else {
                     // Derive data set by favoriting movies
-                    Log.d(LOG_TAG, "" + jsonUrlPreferences);
-                    Log.d(LOG_TAG, "Returning FAVORITES");
                     return TMDbUtils.getMovieData(getContext());
                 }
 
@@ -246,18 +228,15 @@ public class MovieFragment extends Fragment implements
             mAdapter.swapCursor(movieList);
             mEmptyStateView.setVisibility(View.GONE);
             mRefreshButton.setVisibility(View.GONE);
-            Log.d(LOG_TAG, "if Success! Adapter Swapped");
 
         } else if (TMDbUtils.currentSortingMethod.equals(getString(R.string.pref_sorting_favorites))) {
             mEmptyStateView.setVisibility(View.VISIBLE);
             mEmptyStateView.setText(R.string.no_movies_favorited);
             mRefreshButton.setVisibility(View.GONE);
-            Log.d(LOG_TAG, "No favorite movies");
         } else {
             mEmptyStateView.setVisibility(View.VISIBLE);
             mEmptyStateView.setText(R.string.no_movies_found);
             mRefreshButton.setVisibility(View.VISIBLE);
-            Log.d(LOG_TAG, "No rated/popular movies");
         }
     }
 

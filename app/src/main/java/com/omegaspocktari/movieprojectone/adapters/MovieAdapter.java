@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,8 @@ import com.omegaspocktari.movieprojectone.utilities.TMDbUtils;
 import com.squareup.picasso.Picasso;
 
 /**
+ * Recycler View Adapter for card view movies
+ *
  * Created by ${Michael} on 11/4/2016.
  */
 
@@ -27,7 +28,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter(Context context, MovieAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
-        Picasso.with(context).setLoggingEnabled(true);
     }
 
     public void swapCursor(Cursor newCursor) {
@@ -43,13 +43,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         // Utilize View Holder to obtain all the relevant view IDs from the provided layoutView
         MovieViewHolder viewHolder = new MovieViewHolder(layoutView);
 
-
-        Log.d(LOG_TAG, "MovieViewHolder");
         return viewHolder;
     }
 
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        Log.d(LOG_TAG, "onBindViewHolder");
         mCursor.moveToPosition(position);
         holder.bind(mCursor);
     }
@@ -95,30 +92,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public void bind(Cursor movieCursor) {
 
-            Log.d(LOG_TAG, "Does movie Cursor equal null?");
             if (movieCursor != null) {
 
                 String photoPath = movieCursor.getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
 
                 // Decide on the correct menans to locate photo data
                 if (TMDbUtils.currentSortingMethod.equals(mContext.getString(R.string.pref_sorting_favorites))) {
-                    Log.d(LOG_TAG, "Inside the favorite utils");
                     String moviePath = movieCursor.
                             getString(movieCursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_POSTER));
                     // Binding picture to the relevant view
                     TMDbUtils.loadImageFromSystem(moviePath, listItemMoviePoster);
                 } else {
-                    Log.d(LOG_TAG, "Inside the Popularity/Rating utils");
                     // Binding picture to the relevant view
 
                     Picasso.with(itemView.getContext())
                             .load(photoPath)
                             .into(listItemMoviePoster);
                 }
-
             } else {
                 // Do Nothing
-                Log.d(LOG_TAG, "yes!");
             }
         }
 
@@ -129,7 +121,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
          */
         @Override
         public void onClick(View v) {
-            Log.d(LOG_TAG, "\n\nThis is the onReviewClick run within the MovieViewHolder\n\n");
             int adapterPosition = getAdapterPosition();
 
             mClickHandler.onListItemClick(adapterPosition);

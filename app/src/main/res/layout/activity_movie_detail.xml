@@ -44,7 +44,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@color/iv_divider_color"
+                android:background="@android:color/background_light"
                 app:layout_constraintBottom_toTopOf="@+id/ivSynopsisDivider"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -53,6 +53,7 @@
 
             <!-- Movie Title Section -->
             <TextView
+                style="@style/HeaderText"
                 android:id="@+id/tvMovieTitleHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,6 +69,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                style="@style/SubHeaderText"
                 android:id="@+id/tvMovieTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -86,6 +88,7 @@
 
             <!-- Release Date Section -->
             <TextView
+                style="@style/HeaderText"
                 android:id="@+id/tvMovieReleaseDateHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,6 +104,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieTitle" />
 
             <TextView
+                style="@style/SubHeaderText"
                 android:id="@+id/tvMovieReleaseDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -118,6 +122,7 @@
 
             <!-- Rating Bar Section -->
             <TextView
+                style="@style/HeaderText"
                 android:id="@+id/tvRatingBarHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -151,6 +156,7 @@
 
             <!-- Favorite Movie Button Section -->
             <Button
+               style="@style/ButtonText"
                 android:id="@+id/bFavoriteMovie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,6 +165,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/list_item_selector"
                 android:gravity="center"
                 app:layout_constraintLeft_toRightOf="@+id/ivMiddleDivider"
                 app:layout_constraintRight_toRightOf="parent"
@@ -175,7 +182,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:background="@color/iv_divider_color"
+                android:background="@color/ivDividerColor"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -184,6 +191,7 @@
             <!-- Movie Synopsis -->
 
             <TextView
+                style="@style/HeaderText"
                 android:id="@+id/tvMovieSynopsisHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -197,6 +205,7 @@
 
             <TextView
                 android:id="@+id/tvMovieSynopsis"
+                style="@style/BodyText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
@@ -221,7 +230,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/iv_divider_color"
+                android:background="@color/ivDividerColor"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMovieSynopsis"
@@ -231,6 +240,7 @@
 
             <TextView
                 android:id="@+id/tvMovieTrailersHeader"
+                style="@style/HeaderText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
@@ -242,19 +252,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/ivTrailerDivider" />
 
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvMovieVideos"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="true"
-                    android:scrollbars="vertical"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvMovieTrailersHeader"
-                    android:layout_marginRight="8dp"
-                    app:layout_constraintRight_toRightOf="parent" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvMovieVideos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:clipToPadding="true"
+                android:scrollbars="vertical"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieTrailersHeader" />
 
 
             <!-- Divider for Reviews -->
@@ -268,7 +278,7 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/iv_divider_color"
+                android:background="@color/ivDividerColor"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -278,6 +288,7 @@
 
             <TextView
                 android:id="@+id/tvMovieReviewsHeader"
+                style="@style/HeaderText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
@@ -293,16 +304,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:clipToPadding="true"
-                android:paddingBottom="24dp"
                 android:scrollbars="horizontal"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewsHeader"
-                android:layout_marginRight="8dp"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginLeft="8dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvMovieReviewsHeader" />
 
 
         </android.support.constraint.ConstraintLayout>

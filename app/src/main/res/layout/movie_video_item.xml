@@ -3,34 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/list_item_selector">
 
     <ImageView
         android:id="@+id/ivMovieVideoGraphic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        app:srcCompat="@drawable/ic_play_circle_outline_black_48dp" />
 
     <TextView
         android:id="@+id/tvMovieVideoType"
+        style="@style/SubHeaderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="9dp"
         android:layout_marginTop="8dp"
-        android:paddingRight="24dp"
         android:maxLines="2"
+        android:paddingRight="24dp"
         app:layout_constraintLeft_toRightOf="@+id/ivMovieVideoGraphic"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Featurette" />
 
     <TextView
         android:id="@+id/tvMovieVideoName"
+        style="@style/BodyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

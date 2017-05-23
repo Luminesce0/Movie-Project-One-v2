@@ -15,6 +15,8 @@ import com.omegaspocktari.movieprojectone.data.MovieContract.MovieColumns;
 import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
 
 /**
+ * Content provider for TMDb.db tables
+ *
  * Created by ${Michael} on 4/22/2017.
  */
 
@@ -176,7 +178,6 @@ public class MovieContentProvider extends ContentProvider {
         return returnUri;
     }
 
-    // TODO: Implement this if we decide to move JSON data to a database
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
@@ -195,7 +196,6 @@ public class MovieContentProvider extends ContentProvider {
             // Favorite Movies
             case FAVORITE_MOVIES:
                 // Delete all database entries.
-                // TODO: Potentially remove if not necessary
                 rowsDeleted = db.delete(FavoriteMovies.TABLE_NAME, selection, selectionArgs);
                 break;
             case FAVORITE_MOVIES_WITH_ID:
@@ -208,7 +208,6 @@ public class MovieContentProvider extends ContentProvider {
             // Regular Movies
             case REGULAR_MOVIES:
                 // Delete all database entries.
-                // TODO: Potentially remove if not necessary
                 rowsDeleted = db.delete(RegularMovies.TABLE_NAME, selection, selectionArgs);
                 break;
             case REGULAR_MOVIES_WITH_ID:

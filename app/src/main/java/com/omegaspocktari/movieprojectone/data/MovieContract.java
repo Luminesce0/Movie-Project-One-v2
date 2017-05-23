@@ -4,6 +4,9 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
+ * Database contract for favoriteMovies table and regularMovies table. Stores necessary string
+ * constants that are used in the creation, reading, updating and deleting of the tables
+ *
  * Created by ${Michael} on 4/18/2017.
  */
 

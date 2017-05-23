@@ -10,6 +10,8 @@ import com.omegaspocktari.movieprojectone.data.MovieContract.RegularMovies;
 import static com.omegaspocktari.movieprojectone.data.MovieContract.FavoriteMovies;
 
 /**
+ * Creates and upgrades the TMDb.db tables
+ *
  * Created by ${Michael} on 4/18/2017.
  */
 
@@ -91,7 +93,6 @@ public class MovieDbHelper extends SQLiteOpenHelper{
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO: This is the last implementation learned. Create method that stores data instead
         db.execSQL("DROP TABLE IF EXISTS " + FavoriteMovies.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + RegularMovies.TABLE_NAME);
         onCreate(db);

@@ -13,6 +13,8 @@ import com.omegaspocktari.movieprojectone.MovieDetailInfo;
 import com.omegaspocktari.movieprojectone.R;
 
 /**
+ * Recycler View Adapter for videos
+ *
  * Created by ${Michael} on 5/15/2017.
  */
 

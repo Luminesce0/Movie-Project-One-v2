@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- If the button is being interacted with in selected/pressed/actvated formats apply colorPrimary -->
+    <item android:drawable="@color/colorPrimaryLight" android:state_pressed="true" />
+    <item android:drawable="@color/colorPrimaryLight" android:state_activated="true" />
+    <item android:drawable="@color/colorPrimaryLight" android:state_selected="true" />
+
+    <!-- Default drawable background color if the button is not being interacted with -->
+    <item android:drawable="@android:color/background_light" />
+</selector>

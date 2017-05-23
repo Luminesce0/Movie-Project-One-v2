@@ -33,6 +33,8 @@ import static com.omegaspocktari.movieprojectone.utilities.NetworkUtils.createUr
 import static com.omegaspocktari.movieprojectone.utilities.NetworkUtils.makeHTTPRequest;
 
 /**
+ * Utility to interact with TMDb
+ *
  * Created by ${Michael} on 11/7/2016.
  */
 public class TMDbUtils {
@@ -119,7 +121,6 @@ public class TMDbUtils {
 
     private static void putMovieDataIntoDatabase(String jsonResponse, Context context) {
         int deleted = context.getContentResolver().delete(RegularMovies.CONTENT_URI, null, null);
-        Log.d(LOG_TAG, "DELETED MOVIES: " + deleted);
         try {
 
             final String TMDB_RESULTS = "results";
@@ -160,7 +161,6 @@ public class TMDbUtils {
                 String[] selectionArgs = new String[]{Integer.toString(movieId)};
 
                 // Acquire a cursor that represents if it exists with null true or movie
-                Log.d(LOG_TAG, "Here is the selection for movieDatabase cursor: " + movieId);
                 Cursor movieDatabase = context.getContentResolver().query(RegularMovies.CONTENT_URI,
                         null,
                         selection,
@@ -169,13 +169,8 @@ public class TMDbUtils {
 
                 // Set the appropriate button for a non-null/null response
                 if (movieDatabase.getCount() > 0) {
-                    Log.d(LOG_TAG, "Nothing was done! Movie: " + movieTitle);
-                    Log.d(LOG_TAG, "Iteration(Not Done): " + i);
-//                     do nothing
                     movieDatabase.close();
                 } else {
-                    Log.d(LOG_TAG, "Iteration(Done): " + i);
-                    Log.d(LOG_TAG, "Movie added! " + movieTitle);
                     ContentValues cv = new ContentValues();
                     cv.put(MovieColumns.COLUMN_MOVIE_ID, movieId);
                     cv.put(MovieColumns.COLUMN_MOVIE_TITLE, movieTitle);
@@ -259,7 +254,6 @@ public class TMDbUtils {
                 String videoName = movieJsonObject.getString(TMDB_NAME);
                 String videoType = movieJsonObject.getString(TMDB_TYPE);
 
-                //TODO: Try to instantiate the List<String> in a new Initiate method
                 // JSON Object variables added to the relevant position
                 if (videoKey != null) {
                     mdi.movieVideoKey.add(i, videoKey);
@@ -413,7 +407,6 @@ public class TMDbUtils {
         ContextWrapper cw = new ContextWrapper(context);
 
         File filePath = new File(cw.getFilesDir(), imageFile);
-        Log.d(LOG_TAG, "File Directory inside saveToInternalStorage: " + filePath);
 
         FileOutputStream fos = null;
         try {

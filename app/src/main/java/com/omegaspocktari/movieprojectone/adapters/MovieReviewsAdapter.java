@@ -3,7 +3,6 @@ package com.omegaspocktari.movieprojectone.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.omegaspocktari.movieprojectone.MovieDetailInfo;
 import com.omegaspocktari.movieprojectone.R;
 
 /**
+ * Recycler View Adapter for reviews
+ *
  * Created by ${Michael} on 5/15/2017.
  */
 
@@ -32,7 +33,6 @@ public class MovieReviewsAdapter extends
     private MovieDetailInfo mMDI;
 
     public MovieReviewsAdapter(@NonNull Context context, MovieReviewsAdapterOnClickHandler clickHandler) {
-        Log.d(LOG_TAG, "Look at me!");
         mContext = context;
         mClickHandler = clickHandler;
     }
@@ -55,7 +55,7 @@ public class MovieReviewsAdapter extends
         String reviewAuthor = mMDI.movieReviewAuthor.get(position);
         String reviewContent = mMDI.movieReviewContent.get(position);
 
-        holder.reviewAuthorView.append(" " + reviewAuthor);
+        holder.reviewAuthorView.append(reviewAuthor);
         holder.reviewContentView.setText(reviewContent);
     }
 
@@ -75,7 +75,6 @@ public class MovieReviewsAdapter extends
      * @param mdi
      */
     public void swapReviewAdapterMDI(MovieDetailInfo mdi) {
-        Log.d(LOG_TAG, "SWAP REVIEW DETAILS");
         mMDI = mdi;
         notifyDataSetChanged();
     }

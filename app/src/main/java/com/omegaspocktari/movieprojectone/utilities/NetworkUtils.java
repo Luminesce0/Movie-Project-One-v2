@@ -12,6 +12,8 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
+ * Utility to connect to the internet
+ *
  * Created by ${Michael} on 4/18/2017.
  */
 

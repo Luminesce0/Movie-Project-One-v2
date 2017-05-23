@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /**
+ * Main activity that hosts the MovieFragment that contains a RecyclerView with a list of cards
+ *
  * Credits...
  * http://www.vogella.com/tutorials/AndroidRecyclerView/article.html (Recycler View)...
  * https://developer.android.com/training/material/lists-cards.html#RVExamples

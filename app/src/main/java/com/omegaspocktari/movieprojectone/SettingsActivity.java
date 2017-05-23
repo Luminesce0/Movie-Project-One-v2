@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 /**
+ * Activity for settings
+ *
  * Created by ${Michael} on 11/9/2016.
  */
 public class SettingsActivity extends AppCompatActivity{

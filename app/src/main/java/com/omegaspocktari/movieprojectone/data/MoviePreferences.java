@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import com.omegaspocktari.movieprojectone.R;
 
 /**
+ * Acquires the current preference for the preferred movine sorting method
+ *
  * Created by ${Michael} on 4/13/2017.
  */
 

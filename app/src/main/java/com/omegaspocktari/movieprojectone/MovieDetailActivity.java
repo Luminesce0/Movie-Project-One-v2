@@ -16,9 +16,9 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,10 +43,12 @@ import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovi
 import static com.omegaspocktari.movieprojectone.utilities.TMDbUtils.extractMovieVideoJsonDataToMDI;
 
 /**
+ * Activity that expands upon the specifics of a movie, greatly elaborating on the many details of
+ * the movie, showcasing reviews, videos, and an option to save the movie
+ * <p>
  * Created by ${Michael} on 11/11/2016.
  */
 
-// TODO: https://classroom.udacity.com/nanodegrees/nd801/parts/cd689fc8-4765-4588-8e6b-eeb997b5647a/modules/f00afa8d-bde2-43d7-9c7e-4d7d52e28a27/lessons/950e6939-1786-4659-89de-5af2dec70716/concepts/0936369f-d687-479a-9de9-0a31ec5d61cd
 public class MovieDetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         MovieVideosAdapter.MovieTrailerAdapterOnClickHandler,
@@ -79,10 +81,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        Log.d(LOG_TAG, "onCreate()");
-
-        // Enable picasso logging
-        Picasso.with(this).setLoggingEnabled(true);
 
         // Replaces set content view
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_movie_detail);
@@ -102,11 +100,20 @@ public class MovieDetailActivity extends AppCompatActivity implements
         LinearLayoutManager layoutManagerVideos =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         LinearLayoutManager layoutManagerReviews =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         // Associate the layout managers with the relevant recycler views
         mRecyclerViewVideos.setLayoutManager(layoutManagerVideos);
         mRecyclerViewReviews.setLayoutManager(layoutManagerReviews);
+
+        // Item decorations for both recycler views
+        DividerItemDecoration dividerItemDecorationMovies = new DividerItemDecoration(mRecyclerViewVideos.getContext(),
+                layoutManagerVideos.getOrientation());
+        mRecyclerViewVideos.addItemDecoration(dividerItemDecorationMovies);
+
+        DividerItemDecoration dividerItemDecorationReviews = new DividerItemDecoration(mRecyclerViewReviews.getContext(),
+                layoutManagerVideos.getOrientation());
+        mRecyclerViewReviews.addItemDecoration(dividerItemDecorationReviews);
 
         // Adapters
         mMovieVideoAdapter = new MovieVideosAdapter(this, this);
@@ -135,7 +142,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(LOG_TAG, "onStop()");
         getIntent().putExtra(BUNDLE_KEY, Parcels.wrap(mMDI));
     }
 
@@ -143,12 +149,9 @@ public class MovieDetailActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         Bundle bundle = getIntent().getExtras();
-        Log.d(LOG_TAG, "onResume()");
         if (bundle != null) {
-            Log.d(LOG_TAG, "bundle isn't null?");
             MovieDetailInfo mdi = Parcels.unwrap(bundle.getParcelable(BUNDLE_KEY));
             if (mdi != null) {
-                Log.d(LOG_TAG, "Got our thing back");
                 mMDI = mdi;
                 displayMovieDetails();
             }
@@ -186,8 +189,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
                             null,
                             null,
                             null);
-                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
-                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
 
                     cursor.moveToPosition(mPosition);
 
@@ -198,8 +199,7 @@ public class MovieDetailActivity extends AppCompatActivity implements
                             null,
                             null,
                             null);
-                    Log.d(LOG_TAG, "NUMBER OF STUFF " + cursor.getCount());
-                    Log.d(LOG_TAG, "WAHT IS HAPPEN");
+
                     cursor.moveToPosition(mPosition);
                 }
                 String movieID = cursor.getString(cursor.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
@@ -218,19 +218,15 @@ public class MovieDetailActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         // Check integrity of the information
-        Log.d(LOG_TAG, "ON LOAD FINISHED");
         boolean cursorHasValidData = false;
         if (data != null) {
             cursorHasValidData = true;
         }
 
         if (!cursorHasValidData) {
-            Log.d(LOG_TAG, "Cursor doesn't have valid data: " + mPosition);
             return;
         }
         // Generate MovieDetailPage
-        Log.d(LOG_TAG, "Generating Detail Page");
-
         if (!mMDI.mdiDataStored) {
             mMDI = TMDbUtils.generateMovieDetailInfo(data, mMDI);
         }
@@ -247,7 +243,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
     @Override
     public void onVideoClick(String key) {
-        Log.d(LOG_TAG, "MDA onReviewClick");
 
         // Generate the youtube browser URI
         String videoUri = this.getString(R.string.movie_video_uri_base) + key;
@@ -295,10 +290,8 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
         // Set the appropriate button for a non-null/null response
         if (favoriteMovieDatabase.moveToFirst()) {
-            Log.d(LOG_TAG, "setMovieFavoriteButtonStatus - True - Unavorite");
             setMovieFavoriteButtonStatus(true, movie);
         } else {
-            Log.d(LOG_TAG, "setMovieFavoriteButtonStatus - False - Favorite");
             setMovieFavoriteButtonStatus(false, movie);
         }
     }
@@ -349,13 +342,10 @@ public class MovieDetailActivity extends AppCompatActivity implements
     private void removeFavoriteMovie(Cursor movie) {
 
         // Gather information of movie
-        Log.d(LOG_TAG, "removeFavoriteMovie");
         int movieId = movie.
                 getInt(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
         String movieTitle = movie.
                 getString(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_TITLE));
-
-        Log.d(LOG_TAG, "movieID" + movieId + "\nMovieTitleee: " + movieTitle);
 
         // Create selection and the necessary arguments to delete this specific movie
         String selection = MovieColumns.COLUMN_MOVIE_ID + "=?";
@@ -381,7 +371,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
                 delete(FavoriteMovies.CONTENT_URI, selection, selectionArgs);
 
         // Delete movie and return result as a toast
-        Log.d(LOG_TAG, "Pre if statement");
         if (deletedRow <= 0) {
             // Toast to verify that the deletion of the movie was unsuccessful
             Toast.makeText(this, "Error Deleting Movie: " + movieTitle,
@@ -390,8 +379,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
             // Delete stored image
             File moviePosterPath = new File(this.getFilesDir(), posterPath);
             moviePosterPath.delete();
-
-            Log.d(LOG_TAG, "Removed : " + deletedRow + " Movies.");
 
             // Toast to verify deletion of favorite movie to user
             Toast.makeText(this, movieTitle + " \nRemoved from Your Favorites",
@@ -418,7 +405,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
      */
     public void addNewFavoriteMovie(Cursor movie) {
         // Gather all relevant information
-        Log.d(LOG_TAG, "addFavoriteMovie");
         ContentValues cv = new ContentValues();
         int movieRow = movie.
                 getInt(movie.getColumnIndex(MovieColumns.COLUMN_MOVIE_ID));
@@ -450,7 +436,6 @@ public class MovieDetailActivity extends AppCompatActivity implements
 
             mFavoriteMovieLocation = TMDbUtils.saveToInternalStorage(bitmap, movieId, this);
 
-            Log.d(LOG_TAG, "inside if statement of first if, POSTER PATH: " + mFavoriteMovieLocation);
             if (mFavoriteMovieLocation != null) {
                 cv.put(MovieColumns.COLUMN_MOVIE_ID, movieId);
                 cv.put(MovieColumns.COLUMN_MOVIE_TITLE, movieTitle);
