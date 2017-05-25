@@ -5,7 +5,7 @@ Movie Project One is an app built to help users discover popular and highly rate
 It displays a scrolling grid of movie trailers, launches a details screen whenever a particular movie is selected, 
 allows users to save favorites, play trailers, and read user reviews. 
 
-Movie-Project-One-v2's Coding Features & Design
+Movie Project One Coding Features & Design
 ------
 This app utilizes core Android user interface components (Recycler View, View Holders, Constraint Layout), 
 Material Design, preference integration, multi threading and content provider functionality. 
