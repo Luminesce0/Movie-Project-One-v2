@@ -20,6 +20,7 @@ Movie-Project-One-v2 fetches movie information using themoviedb.org web API.
 
 To utilize Movie-Project-One-v2
 ------
+
 1. An account can be created at https://www.themoviedb.org/
 2. Once logged into your profile, your API key can be found at https://www.themoviedb.org/settings/api
 
