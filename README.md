@@ -10,8 +10,8 @@ Movie-Project-One-v2's Coding Features & Design
 This app utilizes core Android user interface components (Recycler View, View Holders, Constraint Layout), 
 Material Design, preference integration, multi threading and content provider functionality. 
 
-As a whole, this gives Movie Project One data storage capabilities, offline functionality, an uninhibitied UI thread, 
-effecient UI generation and a Material Design inspired UI.
+As a whole, this gives Movie Project One data storage capabilities, offline functionality, an uninhibited UI thread, 
+efficient UI generation and a Material Design inspired UI.
 
 
 Movie-Project-One-v2 fetches movie information using themoviedb.org web API.
