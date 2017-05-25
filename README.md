@@ -24,7 +24,7 @@ To utilize Movie Project One
 1. An account can be created at https://www.themoviedb.org/
 2. Once logged into your profile, your API key can be found at https://www.themoviedb.org/settings/api
 
-   *Utilize the API Key (**v3** Auth)*  
+   **_Utilize the API Key (v3 Auth)_**  
 3. Once the API Key is acquired, find the file gradle.properties
 4. Insert your API key within the quotations at line 19 MyMovieDBApiKey=""
 5. The app is now ready to use once built and deployed! Enjoy
