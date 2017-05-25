@@ -12,13 +12,11 @@ Material Design, preference integration, multi threading and content provider fu
 
 As a whole, this gives Movie Project One data storage capabilities, offline functionality, an uninhibitied UI thread, 
 effecient UI generation and a Material Design inspired UI.
-     
-     
-     
-     
-![alt text](https://www.themoviedb.org/assets/static_cache/41bdcf10bbf6f84c0fc73f27b2180b95/images/v4/logos/91x81.png)
- 
- Movie-Project-One-v2 fetches movie information using themoviedb.org web API.
+
+
+Movie-Project-One-v2 fetches movie information using themoviedb.org web API.
+
+![alt text](https://www.themoviedb.org/assets/static_cache/41bdcf10bbf6f84c0fc73f27b2180b95/images/v4/logos/91x81.png "TMDb")
 
 To utilize Movie-Project-One-v2
 ------
