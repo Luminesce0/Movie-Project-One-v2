@@ -1,4 +1,4 @@
-Movie-Project-One-v2
+Movie Project One
 ======
 Movie Project One is an app built to help users discover popular and highly rated movies on the web. 
 
@@ -14,11 +14,11 @@ As a whole, this gives Movie Project One data storage capabilities, offline func
 efficient UI generation and a Material Design inspired UI.
 
 
-Movie-Project-One-v2 fetches movie information using themoviedb.org web API.
+Movie Project One fetches movie information using themoviedb.org web API.
 
 ![alt text](https://www.themoviedb.org/assets/static_cache/41bdcf10bbf6f84c0fc73f27b2180b95/images/v4/logos/91x81.png "TMDb")
 
-To utilize Movie-Project-One-v2
+To utilize Movie Project One
 ------
 
 1. An account can be created at https://www.themoviedb.org/
