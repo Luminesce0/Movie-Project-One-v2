@@ -1,16 +1,20 @@
-Alt-H1Movie-Project-One-v2
-
-Alt-H2Movie Project One is an app built to help users discover popular and highly rated movies on the web. 
+Movie-Project-One-v2
+======
+Movie Project One is an app built to help users discover popular and highly rated movies on the web. 
 
 It displays a scrolling grid of movie trailers, launches a details screen whenever a particular movie is selected, 
 allows users to save favorites, play trailers, and read user reviews. 
 
-This app utilizes core Android user interface components, data persistence, 
-preference integration, multi threading and content provider functionality. 
+This app utilizes core Android user interface components (Recycler View, View Holders, Constraint Layout), 
+Material Design, preference integration, multi threading and content provider functionality. 
+
+As a whole, this gives Movie Project One data storage capabilities, offline functionality, an uninhibitied UI thread, 
+effecient UI generation and a Material Design inspired UI.
 
 The app fetches movie information using themoviedb.org web API or from the device's storage.
 
-Alt-H2 To utilize Movie-Project-One-v2
+To utilize Movie-Project-One-v2
+------
 1. An account can be created at https://www.themoviedb.org/
 2. Once logged into your profile, your API key can be found at https://www.themoviedb.org/settings/api
 3. Once the API key is acquired, find the file gradle.properties
