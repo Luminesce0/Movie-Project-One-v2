@@ -13,13 +13,15 @@ Material Design, preference integration, multi threading and content provider fu
 As a whole, this gives Movie Project One data storage capabilities, offline functionality, an uninhibitied UI thread, 
 effecient UI generation and a Material Design inspired UI.
 
+
+![alt text](https://www.themoviedb.org/assets/static_cache/41bdcf10bbf6f84c0fc73f27b2180b95/images/v4/logos/91x81.png)
 The app fetches movie information using themoviedb.org web API or from the device's storage.
 
 To utilize Movie-Project-One-v2
 ------
 1. An account can be created at https://www.themoviedb.org/
 2. Once logged into your profile, your API key can be found at https://www.themoviedb.org/settings/api
-..* Utilize the API Key (v3 Auth) 
+  *Utilize the API Key (v3 Auth)*
 3. Once the API Key is acquired, find the file gradle.properties
 4. Insert your API key within the quotations at line 19 MyMovieDBApiKey=""
 5. The app is now ready to use once built and deployed! Enjoy
