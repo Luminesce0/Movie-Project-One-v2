@@ -2,7 +2,7 @@ Movie Project One
 ======
 Movie Project One is an app built to help users discover popular and highly rated movies on the web. 
 
-It displays a scrolling grid of movie trailers, launches a details screen whenever a particular movie is selected, 
+It displays a scrolling grid of movies, launches a details screen whenever a particular movie is selected, 
 allows users to save favorites, play trailers, and read user reviews. 
 
 Movie Project One Coding Features & Design
